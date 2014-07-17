@@ -1,0 +1,66 @@
+#trader_summary {
+    width:100%;
+    border:0;
+    text-align: left;
+}
+
+#trader_history {
+    width:100%;
+    border:0;
+    text-align:center;
+}
+
+td.trader-sidebar-entry {
+    text-align: center;
+}
+
+td.trader-padding {
+    padding:1px;
+}
+
+div.sidebar-container {
+    width:21%;
+    float:left;
+    padding-right: 10px;
+}
+
+div.trader-feedback-container {
+    width:77%;
+    float:left;
+}
+
+div.trader-feedback-container #tabs {
+    margin-top: 0px;
+}
+
+strong.trader_rating {
+    font-size: 14px;
+    /*text-shadow: 0px 1px 1px #000000;*/
+}
+
+strong.trader_rating.positive {
+    color:#008000;
+    /*border-style:solid;
+    border-color:#287EC7;*/
+}
+
+strong.trader_rating.negative {
+    color:#FF0000;
+}
+
+span.trader_date {
+    border-bottom: 1px dotted;
+    cursor: help;
+}
+
+td.no-feedback {
+    text-align: center;
+}
+
+ul.trader-options {
+    float: left;
+}
+
+.trader-row td {
+    vertical-align: middle;
+}

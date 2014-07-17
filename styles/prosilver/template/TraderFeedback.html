@@ -1,0 +1,94 @@
+<!-- INCLUDECSS ../theme/trader.css -->
+<!-- INCLUDE overall_header.html -->
+<div class="page-body">
+    <div class="panel bg3">
+            <form id="editForm" method="post" action="">
+                <h2>  {% if EDIT %} {L_FEEDBACK_TITLE_EDIT} {% else %} {L_FEEDBACK_TITLE} {% endif %} {{ USERNAME }}
+                </h2>
+                <fieldset>
+                    <h3>TOPIC: {% if TOPIC_TYPE==1 %} [WTB] {% elseif TOPIC_TYPE==2 %} [FS] {% elseif TOPIC_TYPE==3 %} [WTT] {% endif %}
+                        {{ TOPIC_TITLE }}
+                        </h3>
+
+                        <dl>
+                            <dt>
+                                <label for="trader_neutral">{L_TRADER_EXPERIENCE}{L_COLON}</label>
+                            </dt>
+                        <dd>
+                            <input id="trader_positive" type="radio" value=1 name="trader_rating" {% if RATING==1 %} checked="checked" {% endif %}>
+                            <label for="trader_positive">
+                                Positive (+1)
+                            </label>
+
+                            <input id="trader_neutral" type="radio"  value=0 name="trader_rating" {% if RATING==0 %} checked="checked" {% endif %}>
+                            <label for="trader_neutral">
+                                Neutral (0)
+                            </label>
+
+                            <input id="trader_negative" type="radio"  value=-1 name="trader_rating" {% if RATING==-1 %} checked="checked" {% endif %}>
+                            <label for="trader_negative">
+                                Negative (-1)
+                            </label>
+                        </dd>
+                    </dl>
+                    <h3>{% if EDIT %} {L_COMMENTS_TITLE_EDIT} {% else %} {L_COMMENTS_TITLE} {% endif %}</h3>
+                    <dl>
+                        <dt>
+                            <label for="short_comment">{L_SHORT_COMMENT}</label>
+                        </dt>
+                        <dd>
+                            <input value="{{ SHORT }}" min="10" max="255" required id="short_comment" type="text" value="" maxlength="255" size="45" name="short_comment">
+                            {% if ERROR.short %}<span style="color:red">{{ ERROR.short }}</span>{% endif %}
+                        </dd>
+                    </dl>
+                    <dl>
+                        <dt>
+                            <label for="long_comment">{L_LONG_COMMENT}</label>
+                        </dt>
+                        <dd>
+                            <textarea max="1000" required id="long_comment" class="inputbox" rows="5" cols="40" name="long_comment">{{ LONG }}</textarea>
+                        </dd>
+                    </dl>
+                    {% if EDIT %}
+                        <dl>
+                            <dt>
+                                <label for="delete_feedback_yes">Delete Feedback?</label>
+                            </dt>
+                            <dd>
+                                <input id="delete_feedback_yes" type="radio" value=1 name="delete_feedback" {% if DELETED %} checked="checked" {% endif %}>
+                                <label for="delete_feedback_yes">
+                                    Yes
+                                </label>
+
+                                <input id="delete_feedback_no" type="radio"  value=0 name="delete_feedback" {% if !DELETED %} checked="checked" {% endif %}>
+                                <label for="delete_feedback_no">
+                                    No
+                                </label>
+                            </dd>
+                        </dl>
+                    {% endif %}
+                </fieldset>
+                <fieldset class="submit-buttons">
+                    <input type="submit" name="submit" value="{L_SUBMIT}" class="button1" />
+                    {S_FORM_TOKEN}
+                </fieldset>
+            </form>
+    </div>
+</div>
+{% if EDIT && MODERATOR %}
+    <h3>Edit History</h3>
+    {% for revision in HISTORY %}
+        <div class="{{ cycle(['bg1', 'bg2'], loop.index0) }}">
+                <h3>{{ revision.date_created|date('M j, Y g:i A', false) }} {% if revision.username %} - {{ revision.username }} {% endif %}</h3>
+                <div class="inner">
+                    <strong>Summary:</strong> {{ revision.short_comment }} </br>
+                    <strong>Private Comment:</strong> <div>{{ revision.long_comment|nl2br }}</div>
+                </div>
+        </div>
+    {% else %}
+        <strong>No edits</strong>
+    {% endfor %}
+{% endif %}
+
+
+<!-- INCLUDE overall_footer.html -->

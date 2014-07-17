@@ -1,0 +1,7 @@
+{% if topicrow.TRADER_TYPE == 1 %}
+    <strong title="Want to Buy">[WTB]</strong>
+{% elseif topicrow.TRADER_TYPE == 2 %}
+    <strong title="For Sale">[FS]</strong>
+{% elseif topicrow.TRADER_TYPE == 3 %}
+    <strong title="Want to Trade">[WTT]</strong>
+{% endif %}

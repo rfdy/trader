@@ -1,0 +1,13 @@
+{% if postrow.user_trader_rating is defined %}
+<dd title="{{ postrow.title }}" class="post_row_feedback_rating">
+    <strong>
+        Trader Rating{L_COLON}
+    </strong>
+    <a href="{{ postrow.U_VIEW_FEEDBACK }}">
+        {postrow.user_trader_rating}
+        {% if postrow.user_trader_percentage %}
+            ({{ postrow.user_trader_percentage }}% Positive)
+        {% endif %}
+    </a>
+</dd>
+{% endif %}

@@ -1,0 +1,5 @@
+<dl>
+	<dt><label for="enable_trader">Enable Trader{L_COLON}</label><br /><span>Whether or not posts in this forum can be rated by others.</span></dt>
+	<dd><label><input type="radio" class="radio" name="enable_trader" value="1"{% if S_ENABLE_TRADER %} id="enable_thanks" checked="checked" {% endif %} /> {L_YES}</label>
+		<label><input type="radio" class="radio" name="enable_trader" value="0"{% if !S_ENABLE_TRADER %} checked="checked"{% endif %}/> {L_NO}</label></dd>
+</dl>

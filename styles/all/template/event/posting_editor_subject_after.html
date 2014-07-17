@@ -1,0 +1,22 @@
+{% if TRADER_SHOW_FIELD %}
+    <br>
+
+    <strong>I am:</strong>
+
+    <input id="trader_buy" type="radio" {% if TRADER_TYPE == 1 %}checked="checked"{% endif %} value=1 name="prefixfield">
+    <label style="display: inline;" for="trader_buy">
+        Buying
+    </label>
+
+    <input id="trader_sell" type="radio" {% if TRADER_TYPE == 2 %}checked="checked"{% endif %} value=2 name="prefixfield">
+    <label style="display: inline;" for="trader_sell">
+        Selling
+    </label>
+
+    <input id="trader_trade" type="radio" {% if TRADER_TYPE == 3 %}checked="checked"{% endif %} value=3 name="prefixfield">
+    <label style="display: inline;" for="trader_trade">
+        Trading
+    </label>
+
+    <input type="hidden" name="trader_first_post" value="1">
+{% endif %}

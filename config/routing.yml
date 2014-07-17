@@ -1,0 +1,14 @@
+rfd_trader_feedback:
+    path: /trader/give-feedback/
+    defaults:
+        _controller: rfd.trader.controller:defaultAction
+
+rfd_trader_edit_feedback:
+    path: /trader/edit-feedback/
+    defaults:
+        _controller: rfd.trader.controller:editFeedbackAction
+
+rfd_trader_view:
+    path: /trader/view-feedback/
+    defaults:
+        _controller: rfd.trader.controller:viewUserFeedbackAction

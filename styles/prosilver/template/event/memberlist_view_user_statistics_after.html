@@ -1,0 +1,10 @@
+{% if TRADER_RATING is defined %}
+    <dt>Trader Rating{L_COLON}</dt>
+    <dd>
+        <strong id="trader_rating">{TRADER_RATING}</strong>
+        {% if TRADER_PERCENTAGE is defined %}
+        ({{ TRADER_PERCENTAGE }}% Positive)
+        {% endif %}
+        [ <a id="feedback_view" href="{U_FEEDBACK_VIEW}">View Trader Feedback</a> ]
+    </dd>
+{% endif %}

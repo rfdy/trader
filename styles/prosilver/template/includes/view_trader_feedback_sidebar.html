@@ -1,0 +1,84 @@
+<div class="panel bg3">
+    <div class="inner">
+        <div class="panel-container">
+            <div class="panel">
+                <div class="inner">
+                    <h3>Trader Rating Statistics</h3>
+                    <table id="trader_summary">
+                        <tbody>
+                        <tr>
+                            <td>Trader Rating:</td>
+                            <td><strong>{{ trader_stats.user_trader_rating }}</strong></td>
+                        </tr>
+                        <tr>
+                            <td>Positive Feedback:</td>
+                            <td>{{ trader_stats.user_trader_percentage }}%</td>
+                        </tr>
+
+                        <tr>
+                            <td>Members who left positive:</td>
+                            <td>{{ trader_stats.user_trader_positive }}</td>
+                        </tr>
+                        <tr>
+                            <td>Members who left negative:</td>
+                            <td>{{ trader_stats.user_trader_negative }}</td>
+                        </tr>
+                        <tr>
+                            <td>Total positive feedback:</td>
+                            <td>{{ trader_stats.user_trader_total_positive }}</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="panel bg3">
+    <div class="inner">
+        <div class="panel-container">
+            <div class="panel">
+                <div class="inner">
+                    <h3>Recent Ratings</h3>
+                    <table id="trader_history" cellspacing="0" cellpadding="2">
+                        <tbody>
+                        <tr>
+                            <td>&nbsp;</td>
+                            <td align="center">Past<br>Month</td>
+                            <td align="center">Past<br>6 Months</td>
+                            <td align="center">Past<br>12 Months</td>
+                        </tr>
+                        <tr>
+                            <td class="alt2 trader-padding" colspan="4"></td>
+                        </tr>
+                        <tr>
+                            <td class="trader-sidebar-entry"><strong class="trader_rating positive" title="Positive">+1</strong></td>
+                            {% for val in recent_feedback[1] %}
+                            <td class="trader-sidebar-entry">{{ val }}</td>
+                            {% endfor %}
+                        </tr>
+                        <tr>
+                            <td class="alt2 trader-sidebar-entry" colspan="4"></td>
+                        </tr>
+                        <tr>
+                            <td class="trader-sidebar-entry"><strong class="trader_rating neutral" title="Neutral">&nbsp; 0</strong></td>
+                            {% for val in recent_feedback[0] %}
+                            <td class="trader-sidebar-entry">{{ val }}</td>
+                            {% endfor %}
+                        </tr>
+                        <tr>
+                            <td class="alt2 trader-padding" colspan="4"></td>
+                        </tr>
+                        <tr style="color:#FF0000">
+                            <td class="trader-sidebar-entry"><strong class="trader_rating negative" title="Negative">&nbsp;-1</strong></td>
+                            {% for val in recent_feedback[-1] %}
+                            <td class="trader-sidebar-entry">{{ val }}</td>
+                            {% endfor %}
+                        </tr>
+                        </tbody></table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,25 @@
+{
+    "name": "rfd/trader",
+    "type": "phpbb-extension",
+    "description": "iTrade BST extension for phpBB 3.1",
+    "homepage": "http://www.redflagdeals.com",
+    "version": "0.0.1",
+    "time": "2014-04-04",
+    "license": "MIT",
+    "authors": [{
+        "name": "RFDY",
+        "email": "email@email.com",
+        "homepage": "https://www.phpbb.com/community/viewtopic.php?f=456&t=2250501",
+        "role": "Developer"
+    }],
+    "require": {
+        "php": ">=5.3.3",
+        "phpbb/phpbb": "3.1.*@dev"
+    },
+    "extra": {
+        "display-name": "Trader",
+        "soft-require": {
+            "phpbb/phpbb": "3.1.*@dev"
+        }
+    }
+}

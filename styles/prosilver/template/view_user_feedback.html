@@ -1,0 +1,118 @@
+<!-- INCLUDECSS ../theme/trader.css -->
+<!-- INCLUDE overall_header.html -->
+<h2>Trader Feedback for {{ TRADER_USERNAME_FULL }}</h2>
+
+{% import _self as trader %}
+
+<div class="sidebar-container">
+    {% include "includes/view_trader_feedback_sidebar.html" %}
+</div>
+
+<div class="trader-feedback-container" >
+    <div id="tabs">
+        <ul>
+            <li class="tab {% if CURRENT_TAB == 'all' %}activetab{% endif %}" ><a href="{{ U_ACTION_TAB_ALL }}">All Feedback Received</a></li>
+            <li class="tab {% if CURRENT_TAB == 'buy' %}activetab{% endif %}"><a href="{{ U_ACTION_TAB_BUY }}">From Buyers</a></li>
+            <li class="tab {% if CURRENT_TAB == 'sell' %}activetab{% endif %}"><a href="{{ U_ACTION_TAB_SELL }}">From Sellers</a></li>
+            <li class="tab {% if CURRENT_TAB == 'trade' %}activetab{% endif %}"><a href="{{ U_ACTION_TAB_TRADE }}">From Trades</a></li>
+            <li class="tab {% if CURRENT_TAB == 'left' %}activetab{% endif %}"><a href="{{ U_ACTION_TAB_LEFT }}">Left for Others</a></li>
+        </ul>
+    </div>
+
+    <div class="panel bg3">
+        <div class="inner">
+            <div class="panel-container">
+                <div class="panel">
+                    <div class="inner">
+                        {% include "includes/trader_pagination.html" %}
+                        <table class="table1">
+                            <thead>
+                            <tr>
+                                <th class="name">Rating Summary</th>
+                                <th class="name">Topic</th>
+                                {% if CURRENT_TAB == 'left' or CURRENT_TAB == 'all' %}
+                                <th class="name">Type</th>
+                                {% endif %}
+                                <th class="name">{% if CURRENT_TAB == 'left' %}Recipient{% else %}From{% endif %}</th>
+                                <th class="name">Date</th>
+                                <th class="name">Options</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for fdb_row in feedbacks %}
+                                <tr id="fdb-{{ fdb_row.feedback_id }}" class="{{ cycle(['bg1', 'bg2'], loop.index0) }} trader-row">
+                                    <td>
+                                        {% if fdb_row.feedback_score == 1 %}
+                                            <strong class="trader_rating positive" title="Positive">+1</strong>
+                                        {% elseif fdb_row.feedback_score == -1 %}
+                                            <strong class="trader_rating negative" title="Negative">&nbsp;-1</strong>
+                                        {% else %}
+                                            <strong class="trader_rating neutral" title="Neutral">&nbsp; 0</strong>
+                                        {% endif %}
+                                        &bull;
+                                        {% if fdb_row.is_deleted %}
+                                        <span title="This feedback was deleted">[<em>DELETED</em>]</span>
+                                        {% endif %}
+                                        {{ fdb_row.short_comment }}
+                                    </td>
+                                    <td>
+                                        <a title="Go to Topic: {{ fdb_row.topic_title }}" href="{{ fdb_row.topic_url }}">{{ fdb_row.topic_title }}</a>
+                                    </td>
+                                    {% if CURRENT_TAB == 'left' or CURRENT_TAB == 'all' %}
+                                    <td>
+                                        {% if fdb_row.topic_type == 3 %}
+                                            Trader
+                                        {% else %}
+                                            {% if fdb_row.show_left_for_others %}
+                                                {% if fdb_row.topic_type == 1 %}
+                                                Buyer
+                                                {% elseif fdb_row.topic_type == 2 %}
+                                                Seller
+                                                {% endif %}
+                                            {% else %}
+                                                {% if fdb_row.topic_type == 1 %}
+                                                Seller
+                                                {% elseif fdb_row.topic_type == 2 %}
+                                                Buyer
+                                                {% endif %}
+                                            {% endif %}
+                                        {% endif %}
+
+                                    </td>
+                                    {% endif %}
+                                    <td>
+                                        <a href="{{ fdb_row.U_VIEW_FEEDBACK }}">{{ fdb_row.table_username }}</a>
+                                        (<strong title="Trader Rating: {{ fdb_row.table_user_trader_rating }}">{{ fdb_row.table_user_trader_rating }}</strong>)
+                                    </td>
+                                    <td>
+                                        <span class="trader_date" title="{{ fdb_row.date_created|date('M j, Y - g:i a T', false) }}">{{ fdb_row.date_created|date("M j, Y", false) }}</span>
+                                    </td>
+                                    <td>
+                                        <ul class="trader-options post-buttons">
+                                            {% if fdb_row.U_EDIT_FEEDBACK is defined %}
+                                                <a href="{{ fdb_row.U_EDIT_FEEDBACK }}" class="button icon-button edit-icon" title="Edit this feedback"><span>Edit this feedback</span></a>
+                                            {% endif %}
+
+                                            {% if fdb_row.U_REPORT_FEEDBACK is defined %}
+                                                <a href="{{ fdb_row.U_REPORT_FEEDBACK }}" class="button icon-button report-icon" title="Report this feedback"><span>Report this feedback</span></a>
+                                            {% endif %}
+                                        </ul>
+
+                                    </td>
+                                </tr>
+                            {% else %}
+                            <tr class="{{ cycle(['bg1', 'bg2'], loop.index0) }}">
+                                <td colspan="6" class="no-feedback">There is no feedback to display.</td>
+                            </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                        {% include "includes/trader_pagination.html" %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- INCLUDE overall_footer.html -->

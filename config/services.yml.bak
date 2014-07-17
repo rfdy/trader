@@ -1,0 +1,33 @@
+imports:
+    - { resource: parameters.yml }
+
+services:
+    rfd.trader.controller:
+        class: rfd\trader\Controller\Trader
+        arguments:
+            - @auth
+            - @request
+            - @user
+            - @dbal.conn.driver
+            - @template
+            - @controller.helper
+            - @rfd.trader.ratings_manager
+
+    rfd.trader.trader_listener:
+        class: rfd\trader\Event\TraderListener
+        arguments:
+            - %core.root_path%
+            - %core.php_ext%
+            - @user
+            - @controller.helper
+            - @auth
+            - @request
+            - @rfd.trader.ratings_manager
+        tags:
+            - { name: event.listener }
+
+    rfd.trader.ratings_manager:
+        class: rfd\trader\Service\RatingsManager
+        arguments:
+            - @dbal.conn.driver
+            - { feedback: %tables.trader_feedback%, comments: %tables.trader_comments%, replies: %tables.trader_replies% }
