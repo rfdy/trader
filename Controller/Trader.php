@@ -120,7 +120,7 @@ class Trader {
             trigger_error($this->user->lang('LOG_IN'));
         }
         if (!$this->manager->canGiveFeedback($user_id, $this->user->data['user_id'], $topic_id)) {
-            trigger_error($this->user->lang('ALREADY_GIVEN_FEEDBACK') . '</br></br>' . $back_url);
+        //    trigger_error($this->user->lang('ALREADY_GIVEN_FEEDBACK') . '</br></br>' . $back_url);
         }
         if ($submit && (strlen($short_comment) < self::MIN_SHORT_LENGTH || strlen($short_comment) > self::MAX_SHORT_LENGTH)) {
             $err_comments['short'] = '* Required 10-200 Characters';
@@ -172,6 +172,10 @@ class Trader {
         $feedback_id = $this->request->variable('feedback_id', 0);
         $feedback_row = $this->manager->getAllFeedbackInfo($feedback_id);
 
+        if (!$feedback_row) {
+            trigger_error($this->user->lang('E_FEEDBACK_NOT_FOUND') . '<br /><br />');
+        }
+
         $return_user_id = $this->request->variable('u', $feedback_row['to_user_id']);
         $return_user = $this->getUser($return_user_id);
         $feedback_route = $this->helper->route('rfd_trader_view', array(
@@ -179,9 +183,6 @@ class Trader {
         ));
         $trader_profile_url = $trader_profile_url = '<a href=' . $feedback_route . '>Back</a>';
 
-        if (!$feedback_row) {
-            trigger_error($this->user->lang('E_FEEDBACK_NOT_FOUND') . '<br /><br />');
-        }
         if (!$this->canEditFeedback($feedback_row['date_created'], $feedback_row['from_user_id'])) {
             trigger_error($this->user->lang('E_CANNOT_EDIT') . '<br /><br />' . $trader_profile_url);
         }
@@ -219,7 +220,7 @@ class Trader {
         if ($submit && !$err_comments['short'] && !$err_comments['long']) {
             if ($delete_feedback != $feedback_row['is_deleted']) {
                 if ($delete_feedback){
-                    $this->manager->deleteFeedback($feedback_row);
+                    $this->manager->deleteFeedback($feedback_row, $this->isEditMod());
                 } else {
                     $this->manager->revertDelete($feedback_row);
                 }
@@ -255,7 +256,6 @@ class Trader {
     }
 
     public function viewUserFeedbackAction() {
-
         $user_id = $this->request->variable('u', 0);
         $tab = $this->request->variable('tab', 'all');
         $start	= $this->request->variable('start', 0);
@@ -329,8 +329,16 @@ class Trader {
             $feedback['show_left_for_others'] = $tab == "left";
 
             $comments = $this->manager->getLatestFeedbackComment($feedback['feedback_id']);
-            $feedback['short_comment'] = $comments['short_comment'];
+            if ($comments) {
+                $feedback['short_comment'] = $comments['short_comment'];
 
+                if ($is_edit_mod
+                    || ($feedback['from_user_id'] == $this->user->data['user_id'])
+                    || ($feedback['to_user_id'] == $this->user->data['user_id']))
+                {
+                    $feedback['long_comment'] = $comments['long_comment'];
+                }
+            }
 
             if ($is_edit_mod || $this->canEditFeedback($feedback['date_created'], $feedback['from_user_id'])) {
                 $edit_feedback_url = $this->helper->route('rfd_trader_edit_feedback', array(

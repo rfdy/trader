@@ -59,7 +59,7 @@ class release_0_0_1 extends \phpbb\db\migration\migration {
                     'user_trader_negative'	        => array('UINT', 0),
                 ),
                 $this->table_prefix . 'forums' => array(
-                    'enable_trader' => array('BOOL', 0),
+                    'enabled_trader_types' => array('TINT:3', 0),
                 ),
                 $this->table_prefix . 'topics' => array(
                     'topic_trader_type' => array('VCHAR:10', ''),
@@ -84,7 +84,7 @@ class release_0_0_1 extends \phpbb\db\migration\migration {
                     'user_trader_negative',
                 ),
                 $this->table_prefix . 'forums'   => array(
-                    'enable_trader',
+                    'enabled_trader_types',
                 ),
                 $this->table_prefix . 'topics'   => array(
                     'topic_trader_type',
@@ -103,6 +103,16 @@ class release_0_0_1 extends \phpbb\db\migration\migration {
             array('permission.permission_set', array('ROLE_ADMIN_FULL','a_trader')),
             array('permission.permission_set', array('ROLE_ADMIN_STANDARD','a_trader')),
             array('permission.permission_set', array('ROLE_MOD_FULL','m_feedback_edit')),
+
+            array('module.add', array('acp', 'ACP_CAT_USERGROUP', 'Trader')),
+
+            array('module.add', array('acp', 'Trader', array(
+                'module_basename'	=> '\rfd\trader\acp\main_module',
+                'module_langname'	=> 'Recalculate Trader Rating',
+                'module_mode'	=> 'recalculate_trader_rating',
+                'module_auth'	=> 'acl_a_trader && acl_a_board',
+            ))),
+
         );
     }
 

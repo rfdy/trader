@@ -2,7 +2,7 @@
 <!-- INCLUDE overall_header.html -->
 <div class="page-body">
     <div class="panel bg3">
-            <form id="editForm" method="post" action="">
+            <form method="post" action="{{ U_ACTION }}">
                 <h2>  {% if EDIT %} {L_FEEDBACK_TITLE_EDIT} {% else %} {L_FEEDBACK_TITLE} {% endif %} {{ USERNAME }}
                 </h2>
                 <fieldset>
@@ -46,7 +46,7 @@
                             <label for="long_comment">{L_LONG_COMMENT}</label>
                         </dt>
                         <dd>
-                            <textarea max="1000" required id="long_comment" class="inputbox" rows="5" cols="40" name="long_comment">{{ LONG }}</textarea>
+                            <textarea maxlength="1000" id="long_comment" class="inputbox" rows="5" cols="40" name="long_comment">{{ LONG }}</textarea>
                         </dd>
                     </dl>
                     {% if EDIT %}

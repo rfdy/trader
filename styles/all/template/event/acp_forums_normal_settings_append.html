@@ -1,5 +1,6 @@
 <dl>
-	<dt><label for="enable_trader">Enable Trader{L_COLON}</label><br /><span>Whether or not posts in this forum can be rated by others.</span></dt>
-	<dd><label><input type="radio" class="radio" name="enable_trader" value="1"{% if S_ENABLE_TRADER %} id="enable_thanks" checked="checked" {% endif %} /> {L_YES}</label>
-		<label><input type="radio" class="radio" name="enable_trader" value="0"{% if !S_ENABLE_TRADER %} checked="checked"{% endif %}/> {L_NO}</label></dd>
+	<dt><label for="">Enable Trader{L_COLON}</label><br /><span>Whether or not posts in this forum can be rated by others.</span></dt>
+	<dd><input {% if S_TRADER_BUY %}checked{% endif %} type="checkbox" id="trader_type_buy" name="trader_type_buy" value="buy"> <label for="trader_type_buy">Buy</label>
+        <input {% if S_TRADER_SELL %}checked{% endif %} type="checkbox" id="trader_type_sell" name="trader_type_sell" value="sell"> <label for="trader_type_sell">Sell</label>
+        <input {% if S_TRADER_TRADE %}checked{% endif %} type="checkbox" id="trader_type_trade" name="trader_type_trade" value="trade"> <label for="trader_type_trade">Trade</label></dd>
 </dl>

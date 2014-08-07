@@ -9,7 +9,7 @@ use Symfony\Component\Config\Definition\Exception\Exception,
 class RatingsManager {
     const TOPIC_TYPE_BUY = 1;
     const TOPIC_TYPE_SELL = 2;
-    const TOPIC_TYPE_TRADE = 3;
+    const TOPIC_TYPE_TRADE = 4;
 
     // The following are used as options for method control and are NOT real topic types
     const TAB_TYPE_ALL = 0;
@@ -48,24 +48,67 @@ class RatingsManager {
         $this->tables       = $tables;
     }
 
+    public function getBitField($buy, $sell, $trade) {
+        $buy_bit = ($buy << 0) ;
+        $sell_bit = ($sell << 1);
+        $trade_bit = ($trade << 2);
+
+        return $buy_bit + $sell_bit + $trade_bit;
+    }
+
+    public function isSetBuy($bitfield) {
+        $set = $this->isSetTrader(self::TOPIC_TYPE_BUY, $bitfield);
+        return !empty($set);
+    }
+
+    public function isSetSell($bitfield) {
+        $set = $this->isSetTrader(self::TOPIC_TYPE_SELL, $bitfield);
+        return !empty($set);
+    }
+
+    public function isSetTrade($bitfield) {
+        $set = $this->isSetTrader(self::TOPIC_TYPE_TRADE, $bitfield);
+        return !empty($set);
+    }
+
+    public function getTopicType($topic_id) {
+        $result = $this->db->sql_query('SELECT topic_trader_type FROM ' . TOPICS_TABLE . ' WHERE topic_id=' . $topic_id);
+        $topic_row = $this->db->sql_fetchrow($result);
+
+        return $topic_row['topic_trader_type'];
+
+    }
+
     /**
      * Gives topic a trader type of buy, sell, or trade
      * @param $topic_id
      * @param $type         if topic is buy, sell or trade, signified by int.
      */
-    public function setTopicType($topic_id, $type) {
+    public function setTopicType($forum_id, $topic_id, $type) {
         $topic_id = (int) $topic_id;
+        $forum_id = (int) $forum_id;
 
-        if ($type != self::TOPIC_TYPE_BUY && $type != self::TOPIC_TYPE_SELL && $type != self::TOPIC_TYPE_TRADE) {
+        $result = $this->db->sql_query('SELECT enabled_trader_types FROM ' . FORUMS_TABLE . ' WHERE forum_id=' . $forum_id);
+        $forum_row = $this->db->sql_fetchrow($result);
+        $options = $forum_row['enabled_trader_types'];
+
+
+
+        if (($type && $type != self::TOPIC_TYPE_BUY && $type != self::TOPIC_TYPE_SELL && $type != self::TOPIC_TYPE_TRADE ) || $options == 0) {
             return false;
         }
 
-        $sql_ary = array(
-            'topic_trader_type'          =>  $type,
-        );
-
+        if ($options == self::TOPIC_TYPE_BUY || $options == self::TOPIC_TYPE_SELL || $options == self::TOPIC_TYPE_TRADE ) {
+            $sql_ary = array(
+                'topic_trader_type'          =>  $options,
+            );
+        } else {
+            $sql_ary = array(
+                'topic_trader_type'          =>  $type,
+            );
+        }
         $this->db->sql_query(
-            'UPDATE ' . TOPICS_TABLE . ' SET ' . $this->db->sql_build_array('UPDATE', $sql_ary) . 'WHERE topic_id=' . $topic_id
+            'UPDATE ' . TOPICS_TABLE . ' SET ' . $this->db->sql_build_array('UPDATE', $sql_ary) . ' WHERE topic_id=' . $topic_id
         );
     }
 
@@ -94,26 +137,19 @@ class RatingsManager {
             'is_deleted'           =>  false,
         );
 
-        $result = $this->db->sql_query('INSERT INTO ' . $this->tables['feedback'] . ' ' . $this->db->sql_build_array('INSERT', $sql_ary));
+        $next_id = $this->setUserRating($to_user_id, $from_user_id, 0, $feedback_score, $sql_ary, 'add');
 
-        if (!$result) {
-            return false;
-        }
+        $this->addComment($next_id, $short_comment, $long_comment);
 
-        $this->addComment($this->db->sql_nextid(), $short_comment, $long_comment);
-
-        if ($this->canRateUser($to_user_id, $from_user_id)) {
-            $this->giveUserRating($to_user_id, $feedback_score);
-        }
     }
 
-    public function deleteFeedback($feedback_row) {
+    public function deleteFeedback($feedback_row, $permission) {
         $feedback_id = (int) $feedback_row['feedback_id'];
 
-        if ($this->isFirstFeedback($feedback_row['to_user_id'], $feedback_row['from_user_id'], $feedback_row['feedback_id'])) {
-            $this->removeUserRating($feedback_row['to_user_id'],$feedback_row['feedback_score']);
+        if (!$feedback_row['is_deleted']) {
+            $this->setUserRating($feedback_row['to_user_id'], $feedback_row['from_user_id'], $feedback_row['feedback_score'], 0, array(), 'delete');
         }
-        if ($this->auth->acl_get('m_feedback_edit') || $this->auth->acl_get('a_trader')) {
+        if ($permission) {
             $this->db->sql_query('UPDATE ' . $this->tables['feedback'] . " SET is_deleted=1 WHERE feedback_id=$feedback_id");
         }
         else {
@@ -121,9 +157,10 @@ class RatingsManager {
             $this->db->sql_query('DELETE FROM ' . $this->tables['comments'] . " WHERE feedback_id=$feedback_id");
         }
     }
+
     public function revertDelete($feedback_row) {
-        if ($this->isFirstFeedback($feedback_row['to_user_id'], $feedback_row['from_user_id'], $feedback_row['feedback_id'])) {
-            $this->giveUserRating($feedback_row['to_user_id'], $feedback_row['feedback_score']);
+        if ($feedback_row['is_deleted']) {
+            $this->setUserRating($feedback_row['to_user_id'], $feedback_row['from_user_id'], $feedback_row['feedback_score'], 0, array(), 'revert');
         }
 
         $this->db->sql_query('UPDATE ' . $this->tables['feedback'] . ' SET is_deleted=0 WHERE feedback_id=' . $feedback_row['feedback_id']);
@@ -181,7 +218,10 @@ class RatingsManager {
 
     public function getLatestFeedbackComment($feedback_id) {
         $comments = $this->getFeedbackComments($feedback_id, 1);
-        return $comments[0];
+        if (isset($comments[0])) {
+            return $comments[0];
+        }
+        return false;
     }
 
     /**
@@ -222,24 +262,18 @@ class RatingsManager {
         if ($rating == self::RATE_POSITIVE) {
             $sql .= ' SET user_trader_positive=user_trader_positive+1';
         }
-        elseif ($rating == self::RATE_NEUTRAL) {
-            $sql .= ' SET user_trader_neutral=user_trader_neutral+1';
-        }
         elseif ($rating == self::RATE_NEGATIVE) {
             $sql .= ' SET user_trader_negative=user_trader_negative+1';
         }
 
         $sql .= ' WHERE user_id=' . $user_id;
 
-        $this->db->sql_query($sql);
+        return $this->db->sql_query($sql);
     }
 
     public function editFeedback($feedback_row, $rating, $new_short, $new_long, $delete, $editor_id) {
-        if ($feedback_row['feedback_score'] != $rating && !$delete &&
-                $this->isFirstFeedback($feedback_row['to_user_id'], $feedback_row['from_user_id'], $feedback_row['feedback_id']))
-        {
-            $this->removeUserRating($feedback_row['to_user_id'], $feedback_row['feedback_score']);
-            $this->giveUserRating($feedback_row['to_user_id'], $rating);
+        if ($feedback_row['feedback_score'] != $rating && !$delete) {
+            $this->setUserRating($feedback_row['to_user_id'], $feedback_row['from_user_id'], $feedback_row['feedback_score'], $rating, array(), 'edit');
         }
 
         $sql_ary = array(
@@ -271,10 +305,10 @@ class RatingsManager {
             return false;
         }
 
-        $result = $this->db->sql_query('SELECT enable_trader FROM ' . FORUMS_TABLE . ' WHERE forum_id=' . $post_row['forum_id']);
+        $result = $this->db->sql_query('SELECT enabled_trader_types FROM ' . FORUMS_TABLE . ' WHERE forum_id=' . $post_row['forum_id']);
         $forum_row = $this->db->sql_fetchrow($result);
 
-        if ($forum_row['enable_trader']) {
+        if ($forum_row['enabled_trader_types']) {
             return true;
         }
         else return false;
@@ -325,7 +359,6 @@ class RatingsManager {
         }
 
         $positive = $trader_stats['user_trader_positive'];
-        $neutral = $trader_stats['user_trader_neutral'];
         $negative = $trader_stats['user_trader_negative'];
         $trader_stats['user_trader_percentage'] = $this->getPositivePercent($positive, $negative);
         $trader_stats['user_trader_rating'] = $positive - $negative;
@@ -388,44 +421,39 @@ class RatingsManager {
         return $recent_feedback_counts;
     }
 
-    private function canRateUser($to_id, $from_id) {
-        $to_id = (int) $to_id;
-        $from_id = (int) $from_id;
+    public function recalculate() {
+        $this->db->sql_query('UPDATE ' . USERS_TABLE . ' SET user_trader_positive=0, user_trader_negative=0');
+        $aggregate_feedback_rows = $this->db->sql_query('SELECT sum(feedback_score) as total_score, to_user_id FROM ' .
+        $this->tables['feedback'] . ' WHERE is_deleted=0 GROUP BY to_user_id, from_user_id');
 
-        $result = $this->db->sql_query('SELECT feedback_id FROM ' . $this->tables['feedback'] . " WHERE to_user_id=$to_id AND
-                                                                                                     from_user_id=$from_id");
-        $this->db->sql_fetchrow($result);
-        return !$this->db->sql_fetchrow($result);
+        while ($feedback_row = $this->db->sql_fetchrow($aggregate_feedback_rows)) {
+            $to_user_id = $feedback_row['to_user_id'];
+            $rating = $this->normalize($feedback_row['total_score']);
+            $this->giveUserRating($to_user_id, $rating);
+        }
+    }
 
+    private function isSetTrader($type, $bitfield) {
+        if ($type == self::TOPIC_TYPE_BUY) {
+            return $bitfield & (1 << 0);
+        } elseif ($type == self::TOPIC_TYPE_SELL) {
+            return $bitfield & (1 << 1);
+        } elseif ($type == self::TOPIC_TYPE_TRADE) {
+            return $bitfield & (1 << 2);
+        }
     }
 
     /**
-     * Checks if the feedback given is the first feedback exchanged between the users
-     *
-     * @param $feedback_id
+     * Removes rating from user
+     * @param $user_id
+     * @param $rating   Rating to be removed
      */
-    private function isFirstFeedback($to_user_id, $from_user_id, $feedback_id) {
-        $result =  $this->db->sql_query('SELECT feedback_id FROM ' . $this->tables['feedback'] . " WHERE to_user_id=$to_user_id AND from_user_id=$from_user_id
-                                         ORDER BY feedback_id ASC LIMIT 1");
-        if (!($feedback_row = $this->db->sql_fetchrow($result))) {
-            return false;
-        }
-
-        $first_feedback_id = $feedback_row['feedback_id'];
-
-        if ($first_feedback_id == $feedback_id) {
-            return true;
-        } else return false;
-    }
-
     private function removeUserRating($user_id, $rating) {
         $user_id = (int) $user_id;
         $rating = (int) $rating;
         $rating_field = '';
         if ($rating == self::RATE_POSITIVE) {
             $rating_field = 'user_trader_positive';
-        } elseif ($rating == self::RATE_NEUTRAL) {
-            $rating_field = 'user_trader_neutral';
         } elseif ($rating == self::RATE_NEGATIVE) {
             $rating_field = 'user_trader_negative';
         }
@@ -527,6 +555,78 @@ class RatingsManager {
         $row = $this->db->sql_fetchrow($result);
         $this->db->sql_freeresult($result);
         return $row['cnt'];
+    }
+
+    /**
+     * Used to determine if difference between positive and negative ratings changes, and makes appropriate changes to the rating given  to user.
+     *
+     * @param $to_user_id
+     * @param $from_user_id
+     * @param $current_score
+     * @param $new_score
+     * @param $action
+     */
+    private function setUserRating($to_user_id, $from_user_id, $current_score, $new_score, $sql_ary, $action) {
+        $to_user_id = (int) $to_user_id;
+        $from_user_id = (int) $from_user_id;
+        $current_score = (int) $current_score;
+        $new_score = (int) $new_score;
+
+        $difference = $this->countFeedbackType($to_user_id, $from_user_id);
+        $insert = true;
+
+        switch ($action) {
+            case 'add':
+                $new_difference = $difference + $new_score;
+                $insert = $this->db->sql_query('INSERT INTO ' . $this->tables['feedback'] . ' ' . $this->db->sql_build_array('INSERT', $sql_ary));
+                $next_id = $this->db->sql_nextid();
+            break;
+            case 'revert':
+                $new_difference = $difference + $current_score;
+            break;
+            case 'edit':
+                $new_difference = $difference - $current_score + $new_score;
+            break;
+            case 'delete':
+                $new_difference = $difference - $current_score;
+            break;
+        }
+
+        if ($this->normalize($difference) != $this->normalize($new_difference) && $insert) {
+            if ($difference) {
+                $this->removeUserRating($to_user_id, $this->normalize($difference));
+            }
+            if ($new_difference) {
+                $this->giveUserRating($to_user_id, $this->normalize($new_difference));
+            }
+        }
+        return $next_id;
+    }
+
+    /**
+     * Gets count of active positive, negative or neutral feedback between users.
+     * @param $to_user_id
+     * @param $from_user_id
+     * @param $type
+     * @return mixed
+     */
+    private function countFeedbackType($to_user_id, $from_user_id) {
+        $sql = "SELECT sum(feedback_score) as total FROM " . $this->tables['feedback'] . " WHERE to_user_id=$to_user_id AND from_user_id=$from_user_id AND is_deleted=0";
+
+        $result = $this->db->sql_query($sql);
+        $count_row = $this->db->sql_fetchrow($result);
+
+        return $count_row['total'];
+    }
+
+    private function normalize($int) {
+        if ($int > 0) {
+            return 1;
+        } elseif ($int < 0) {
+            return -1;
+        } else {
+            return 0;
+        }
     }
 }
 

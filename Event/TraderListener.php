@@ -69,12 +69,12 @@ class TraderListener implements EventSubscriberInterface {
             'core.acp_manage_forums_display_form'   => 'acp_manage_forums_display_form',
             'core.acp_manage_forums_validate_data'  => 'acp_manage_forums_validate_data',
             'core.viewtopic_post_rowset_data'       => 'viewtopic_post_rowset_data',
-            'core.viewtopic_modify_post_row'        => 'viewtopic_modify_post_row',
             'core.viewforum_modify_topicrow'        => 'viewforum_modify_topicrow',
             'core.posting_modify_template_vars'     => 'posting_modify_template_vars',
             'core.modify_posting_parameters'        => 'modify_posting_parameters',
             'core.viewtopic_modify_post_row'        => 'viewtopic_modify_post_row',
             'core.memberlist_prepare_profile_data'  => 'memberlist_prepare_profile_data',
+            'core.viewtopic_get_post_data'          => 'viewtopic_get_post_data',
         );
     }
 
@@ -114,18 +114,22 @@ class TraderListener implements EventSubscriberInterface {
 
         $post = $this->request->get_super_global(\phpbb\request\request::POST);
 
-        $prefix = $post['prefixfield'];
-        if ($prefix) {
-            $this->manager->setTopicType($data['topic_id'], $prefix);
-        }
+        $type = $post['prefixfield'];
 
+        if ($type || $post['default_type']) {
+            $this->manager->setTopicType($data['forum_id'], $data['topic_id'], $post['prefixfield']);
+        }
         $event->set_data($event_data);
     }
 
     public function acp_manage_forums_display_form(phpbbEvent $event) {
         $data = $event->get_data();
 
-        $data['template_data']['S_ENABLE_TRADER'] = ($data['forum_data']['enable_trader']) ? true : false;
+        $status = $data['forum_data']['enabled_trader_types'];
+
+        $data['template_data']['S_TRADER_BUY'] = $this->manager->isSetBuy($status);
+        $data['template_data']['S_TRADER_SELL'] = $this->manager->isSetSell($status);
+        $data['template_data']['S_TRADER_TRADE'] = $this->manager->isSetTrade($status);
 
         $event->set_data($data);
     }
@@ -135,7 +139,9 @@ class TraderListener implements EventSubscriberInterface {
 
         $post = $this->request->get_super_global(\phpbb\request\request::POST);
 
-        $data['forum_data']['enable_trader'] = empty($post['enable_trader']) ? 0 : 1;
+        $data['forum_data']['enabled_trader_types'] = $this->manager->getBitField(isset($post['trader_type_buy']),
+                                                                                  isset($post['trader_type_sell']),
+                                                                                  isset($post['trader_type_trade']));
 
         $event->set_data($data);
     }
@@ -177,7 +183,7 @@ class TraderListener implements EventSubscriberInterface {
         $data = $event->get_data();
 
         // if trader is not enabled, don't show the rating
-        if (!$data['topic_data']['enable_trader']) {
+        if (!$data['topic_data']['enabled_trader_types']) {
             return false;
         }
         if (!$this->manager->showTrader($data['row']['post_id'], $data['row']['topic_id'])) {
@@ -217,8 +223,11 @@ class TraderListener implements EventSubscriberInterface {
     public function viewforum_modify_topicrow(phpbbEvent $event) {
         global $forum_data;
 
-        if ($forum_data['enable_trader']) { // only set the trader type if trader is enabled
+
+
+        if ($forum_data['enabled_trader_types']) { // only set the trader type if trader is enabled
             $data = $event->get_data();
+
             $topic_row = $data['topic_row'];
             $row = $data['row'];
 
@@ -242,7 +251,7 @@ class TraderListener implements EventSubscriberInterface {
 
         $data = $event->get_data();
 
-        if (empty($data['post_data']['enable_trader'])) {
+        if (empty($data['post_data']['enabled_trader_types'])) {
             return;
         }
 
@@ -267,6 +276,12 @@ class TraderListener implements EventSubscriberInterface {
         }
 
         $_post = $this->request->get_super_global(phpbbRequest::POST);
+        $type_bitfield = $data['post_data']['enabled_trader_types'];
+
+        $data['page_data']['TRADER_BUY'] = $this->manager->isSetBuy($type_bitfield);
+        $data['page_data']['TRADER_SELL'] = $this->manager->isSetSell($type_bitfield);
+        $data['page_data']['TRADER_TRADE'] = $this->manager->isSetTrade($type_bitfield);
+
         if ($mode == 'post') {
             $data['page_data']['TRADER_SHOW_FIELD'] = true;
             if (!empty($data['submit']) || !empty($data['preview'])) { // get value from the post
@@ -284,7 +299,6 @@ class TraderListener implements EventSubscriberInterface {
                 else { // get value from the db
                     $data['page_data']['TRADER_TYPE'] = $data['post_data']['topic_trader_type'];
                 }
-
                 $data['page_data']['TRADER_SHOW_FIELD'] = true;
                 $event->set_data($data);
 
@@ -342,4 +356,10 @@ class TraderListener implements EventSubscriberInterface {
         $event->set_data($data);
     }
 
+    public function viewtopic_get_post_data(phpbbEvent $event) {
+        global $template;
+        $data = $event->get_data();
+
+        $template->assign_var('TOPIC_TRADER_TYPE', $data['topic_data']['topic_trader_type']);
+    }
 }

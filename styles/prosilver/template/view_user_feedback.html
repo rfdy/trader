@@ -53,14 +53,14 @@
                                         {% if fdb_row.is_deleted %}
                                         <span title="This feedback was deleted">[<em>DELETED</em>]</span>
                                         {% endif %}
-                                        {{ fdb_row.short_comment }}
+                                        <span class="trader_short_comment">{{ fdb_row.short_comment }}</span>
                                     </td>
                                     <td>
                                         <a title="Go to Topic: {{ fdb_row.topic_title }}" href="{{ fdb_row.topic_url }}">{{ fdb_row.topic_title }}</a>
                                     </td>
                                     {% if CURRENT_TAB == 'left' or CURRENT_TAB == 'all' %}
                                     <td>
-                                        {% if fdb_row.topic_type == 3 %}
+                                        {% if fdb_row.topic_type == 4 %}
                                             Trader
                                         {% else %}
                                             {% if fdb_row.show_left_for_others %}
@@ -82,19 +82,31 @@
                                     {% endif %}
                                     <td>
                                         <a href="{{ fdb_row.U_VIEW_FEEDBACK }}">{{ fdb_row.table_username }}</a>
-                                        (<strong title="Trader Rating: {{ fdb_row.table_user_trader_rating }}">{{ fdb_row.table_user_trader_rating }}</strong>)
+                                        (<strong title="Trader Score: {{ fdb_row.table_user_trader_rating }}">{{ fdb_row.table_user_trader_rating }}</strong>)
                                     </td>
                                     <td>
                                         <span class="trader_date" title="{{ fdb_row.date_created|date('M j, Y - g:i a T', false) }}">{{ fdb_row.date_created|date("M j, Y", false) }}</span>
                                     </td>
                                     <td>
                                         <ul class="trader-options post-buttons">
-                                            {% if fdb_row.U_EDIT_FEEDBACK is defined %}
-                                                <a href="{{ fdb_row.U_EDIT_FEEDBACK }}" class="button icon-button edit-icon" title="Edit this feedback"><span>Edit this feedback</span></a>
+                                            {% if fdb_row.U_EDIT_FEEDBACK %}
+                                                <li class="trader-option">
+                                                    <a href="{{ fdb_row.U_EDIT_FEEDBACK }}" class="button icon-button edit-icon" title="Edit this feedback"><span class="trader-span">Edit this feedback</span></a>
+                                                </li>
                                             {% endif %}
 
-                                            {% if fdb_row.U_REPORT_FEEDBACK is defined %}
-                                                <a href="{{ fdb_row.U_REPORT_FEEDBACK }}" class="button icon-button report-icon" title="Report this feedback"><span>Report this feedback</span></a>
+                                            {% if fdb_row.U_REPORT_FEEDBACK %}
+                                                <li class="trader-option">
+                                                    <a href="{{ fdb_row.U_REPORT_FEEDBACK }}" class="button icon-button report-icon" title="Report this feedback"><span class="trader-span">Report this feedback</span></a>
+                                                </li>
+                                            {% endif %}
+
+                                            {% if fdb_row.long_comment %}
+                                                <li class="trader-option">
+                                                    <a href="javascript:;" class="button icon-button info-icon" title="Comment {% if CURRENT_TAB == 'left' %}to{% else %}from{% endif %} {{ fdb_row.table_username }}: {{ fdb_row.long_comment }}">
+                                                        <span class="trader-span">View Long Comment</span>
+                                                    </a>
+                                                </li>
                                             {% endif %}
                                         </ul>
 
