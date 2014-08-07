@@ -120,7 +120,7 @@ class Trader {
             trigger_error($this->user->lang('LOG_IN'));
         }
         if (!$this->manager->canGiveFeedback($user_id, $this->user->data['user_id'], $topic_id)) {
-        //    trigger_error($this->user->lang('ALREADY_GIVEN_FEEDBACK') . '</br></br>' . $back_url);
+            trigger_error($this->user->lang('ALREADY_GIVEN_FEEDBACK') . '</br></br>' . $back_url);
         }
         if ($submit && (strlen($short_comment) < self::MIN_SHORT_LENGTH || strlen($short_comment) > self::MAX_SHORT_LENGTH)) {
             $err_comments['short'] = '* Required 10-200 Characters';
