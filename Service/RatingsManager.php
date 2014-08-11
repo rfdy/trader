@@ -13,7 +13,7 @@ class RatingsManager {
 
     // The following are used as options for method control and are NOT real topic types
     const TAB_TYPE_ALL = 0;
-    const TAB_TYPE_LEFT = 4;
+    const TAB_TYPE_LEFT = 5;
 
     const RATE_POSITIVE = 1;
     const RATE_NEUTRAL = 0;
