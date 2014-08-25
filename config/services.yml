@@ -36,4 +36,4 @@ services:
             - @dbal.conn.driver
             - @request
             - @auth
-            - { feedback: %tables.trader_feedback%, comments: %tables.trader_comments%, replies: %tables.trader_replies% }
+            - { feedback: %tables.trader_feedback%, comments: %tables.trader_comments%, replies: %tables.trader_replies%, reports: %tables.trader_reports% }

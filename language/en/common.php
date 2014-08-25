@@ -30,6 +30,7 @@ $lang = array_merge($lang, array(
     'E_FEEDBACK_DELETED'        =>  'Feedback successfully deleted!',
     'E_CANNOT_EDIT'             =>  'You cannot edit the feedback',
     'E_SUCCESSFUL_EDIT'         =>  'Feedback successfully edited',
+    'E_CANNOT_RETURN_FEEDBACK'    =>  'You cannot return a feedback to this person',
     'FEEDBACK_SUCCESS'          =>  'User Successfully Rated!',
     'FEEDBACK_TITLE'            =>  'Submit Feedback For ',
     'FEEDBACK_TITLE_EDIT'       =>  'Edit Feedback For ',

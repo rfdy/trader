@@ -51,6 +51,16 @@ class release_0_0_1 extends \phpbb\db\migration\migration {
                     ),
                     'PRIMARY_KEY'	=> 'comment_id'
                 ),
+                $this->table_prefix . 'trader_reports'		=> array(
+                    'COLUMNS'		=> array(
+                        'report_id'			=> array('UINT', null, 'auto_increment'),
+                        'feedback_id'	    => array('UINT', 0),
+                        'date_created'		=> array('TIMESTAMP', 0),
+                        'reason'		    => array('TEXT', ''),
+                        'status'		    => array('TINT:3', 0),
+                    ),
+                    'PRIMARY_KEY'	=> 'report_id'
+                ),
             ),
             'add_columns'	=> array(
                 $this->table_prefix . 'users'   => array(
@@ -76,6 +86,7 @@ class release_0_0_1 extends \phpbb\db\migration\migration {
                 $this->table_prefix . 'trader_comments',
                 $this->table_prefix . 'trader_replies',
                 $this->table_prefix . 'trader_topics',
+                $this->table_prefix . 'trader_reports',
             ),
             'drop_columns'	=> array(
                 $this->table_prefix . 'users'   => array(
@@ -111,6 +122,22 @@ class release_0_0_1 extends \phpbb\db\migration\migration {
                 'module_langname'	=> 'Recalculate Trader Rating',
                 'module_mode'	=> 'recalculate_trader_rating',
                 'module_auth'	=> 'acl_a_trader && acl_a_board',
+            ))),
+
+            // MCP: Reported Trader feedbacks
+            array('module.add', array('mcp', 'MCP_REPORTS', array(
+                'module_basename'	=> '\rfd\trader\mcp\mcp_trader_module',
+                'module_langname'	=> 'Open Trader reports',
+                'module_mode'	=> 'open_trader_reports',
+                'module_auth'	=> 'acl_m_feedback_edit || acl_a_trader',
+            ))),
+
+            // MCP: Reported Trader feedbacks
+            array('module.add', array('mcp', 'MCP_REPORTS', array(
+                'module_basename'	=> '\rfd\trader\mcp\mcp_trader_module',
+                'module_langname'	=> 'Closed Trader reports',
+                'module_mode'	=> 'closed_trader_reports',
+                'module_auth'	=> 'acl_m_feedback_edit || acl_a_trader',
             ))),
 
         );

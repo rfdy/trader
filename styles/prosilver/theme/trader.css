@@ -64,3 +64,14 @@ ul.trader-options {
 .trader-row td {
     vertical-align: middle;
 }
+
+.email-icon:before {
+    background-position: -20px 0;
+}
+.email-icon:hover:before {
+    background-position: -20px -21px;
+}
+
+.options-box {
+
+}

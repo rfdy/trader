@@ -2,4 +2,5 @@ parameters:
     tables.trader_feedback: %core.table_prefix%trader_feedback
     tables.trader_comments: %core.table_prefix%trader_comments
     tables.trader_replies: %core.table_prefix%trader_replies
+    tables.trader_reports: %core.table_prefix%trader_reports
 

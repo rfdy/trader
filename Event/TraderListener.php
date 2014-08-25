@@ -190,6 +190,8 @@ class TraderListener implements EventSubscriberInterface {
             return false;
         }
 
+
+
         $feedback_url = $this->helper->route('rfd_trader_feedback', array(
             'topic_id'  =>  $data['row']['topic_id'],
         ));

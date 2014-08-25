@@ -89,6 +89,12 @@
                                     </td>
                                     <td>
                                         <ul class="trader-options post-buttons">
+                                            {% if fdb_row.U_REPLY_FEEDBACK %}
+                                                <li class="trader-option">
+                                                    <a style="background-position: -19px 0;" href="{{ fdb_row.U_REPLY_FEEDBACK }}" class="button icon-button email-icon" title="Return Feedback"><span class="trader-span">Return Feedback</span></a>
+                                                </li>
+                                            {% endif %}
+
                                             {% if fdb_row.U_EDIT_FEEDBACK %}
                                                 <li class="trader-option">
                                                     <a href="{{ fdb_row.U_EDIT_FEEDBACK }}" class="button icon-button edit-icon" title="Edit this feedback"><span class="trader-span">Edit this feedback</span></a>
@@ -97,7 +103,7 @@
 
                                             {% if fdb_row.U_REPORT_FEEDBACK %}
                                                 <li class="trader-option">
-                                                    <a href="{{ fdb_row.U_REPORT_FEEDBACK }}" class="button icon-button report-icon" title="Report this feedback"><span class="trader-span">Report this feedback</span></a>
+                                                    <a data-ajax="trader.report" href="{{ fdb_row.U_REPORT_FEEDBACK }}" class="button icon-button report-icon" title="Report this feedback"><span class="trader-span">Report this feedback</span></a>
                                                 </li>
                                             {% endif %}
 
@@ -126,5 +132,15 @@
         </div>
     </div>
 </div>
+
+    <script>
+        window.onload = function() {
+
+            phpbb.addAjaxCallback('trader.report', function(res) {
+                $(this).fadeOut();
+            });
+
+        };
+    </script>
 
 <!-- INCLUDE overall_footer.html -->

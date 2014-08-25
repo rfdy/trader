@@ -15,6 +15,9 @@ class RatingsManager {
     const TAB_TYPE_ALL = 0;
     const TAB_TYPE_LEFT = 5;
 
+    const REPORT_STATUS_CLOSED = 0;
+    const REPORT_STATUS_OPEN = 1;
+
     const RATE_POSITIVE = 1;
     const RATE_NEUTRAL = 0;
     const RATE_NEGATIVE = -1;
@@ -125,10 +128,11 @@ class RatingsManager {
      * @param $long_comment
      * @return bool|mixed
      */
-    public function giveFeedback($to_user_id, $from_user_id, $feedback_score, $topic_id, $topic_title, $topic_type, $short_comment, $long_comment) {
+    public function giveFeedback($to_user_id, $from_user_id, $feedback_reply_id, $feedback_score, $topic_id, $topic_title, $topic_type, $short_comment, $long_comment) {
         $sql_ary = array (
             'to_user_id'           =>  (int) $to_user_id,
             'from_user_id'         =>  (int) $from_user_id,
+            'reply_feedback_id'    =>  (int) $feedback_reply_id,
             'feedback_score'       =>  (int) $feedback_score,
             'topic_id'             =>  (int) $topic_id,
             'topic_title'          =>  $topic_title,
@@ -139,7 +143,11 @@ class RatingsManager {
 
         $next_id = $this->setUserRating($to_user_id, $from_user_id, 0, $feedback_score, $sql_ary, 'add');
 
-        $this->addComment($next_id, $short_comment, $long_comment);
+        if ($next_id) {
+            $this->addComment($next_id, $short_comment, $long_comment);
+            $this->db->sql_query('UPDATE ' . $this->tables['feedback'] . " SET reply_feedback_id=$next_id WHERE feedback_id=$feedback_reply_id");
+        }
+
 
     }
 
@@ -178,6 +186,7 @@ class RatingsManager {
                                                f.feedback_score as rating,
                                                f.topic_title as topic_title,
                                                f.topic_type as topic_type,
+                                               f.topic_id as topic_id,
                                                f.feedback_score as feedback_score,
                                                f.to_user_id as to_user_id,
                                                f.from_user_id as from_user_id,
@@ -555,6 +564,34 @@ class RatingsManager {
         $row = $this->db->sql_fetchrow($result);
         $this->db->sql_freeresult($result);
         return $row['cnt'];
+    }
+
+    /**
+     * Create an open report for the feedback with given id
+     * @param $feedback_id
+     */
+    public function report_feedback($feedback_id) {
+        $sql_ary = array (
+                       'feedback_id' => $feedback_id,
+                       'date_created' => time(),
+                       'reason'       => '', //TODO: Add support for custom reason
+                       'status'       => self::REPORT_STATUS_OPEN,
+                   );
+        $sql = 'INSERT INTO ' . $this->tables['reports'] . ' ' . $this->db->sql_build_array('INSERT', $sql_ary);
+        $result = $this->db->sql_query($sql);
+        return $result;
+    }
+
+    /**
+     * @param $feedback_id
+     * @return bool - true iff there is an open report for given feedback_id
+     */
+    public function has_open_report($feedback_id) {
+        $sql =  'SELECT status FROM ' . $this->tables['reports'] . ' WHERE feedback_id=' . $feedback_id;
+        $sql .=  ' AND status=' . self::REPORT_STATUS_OPEN;
+        $result = $this->db->sql_query($sql);
+        $row = $this->db->sql_fetchrow($result);
+        return !empty($row);
     }
 
     /**

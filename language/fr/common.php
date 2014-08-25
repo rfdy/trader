@@ -1,22 +1,22 @@
 <?php
 /**
-*
-* @package phpBB Extension - Acme Demo
-* @copyright (c) 2013 phpBB Group
-* @license http://opensource.org/licenses/gpl-2.0.php GNU General Public License v2
-*
-* French translation by ForumsFaciles (http://www.forumsfaciles.fr)
-*
-*/
+ *
+ * @package phpBB Extension - Acme Demo
+ * @copyright (c) 2013 phpBB Group
+ * @license http://opensource.org/licenses/gpl-2.0.php GNU General Public License v2
+ *
+ * French translation by ForumsFaciles (http://www.forumsfaciles.fr)
+ *
+ */
 
 if (!defined('IN_PHPBB'))
 {
-	exit;
+    exit;
 }
 
 if (empty($lang) || !is_array($lang))
 {
-	$lang = array();
+    $lang = array();
 }
 
 $lang = array_merge($lang, array(
