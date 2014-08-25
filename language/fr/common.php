@@ -32,6 +32,7 @@ $lang = array_merge($lang, array(
     'E_FEEDBACK_DELETED'        =>  'Avis supprimé avec succès!',
     'E_CANNOT_EDIT'             =>  'Vous ne pouvez pas modifier cet avis',
     'E_SUCCESSFUL_EDIT'         =>  'Avis modifié avec succès',
+    'E_CANNOT_RETURN_FEEDBACK'  =>  'Vous ne pouvez pas retourner un retour à cette personne',
     'FEEDBACK_SUCCESS'          =>  'Utilisateur évalué avec succès!',
     'FEEDBACK_TITLE'            =>  'Valider l’avis pour ',
     'FEEDBACK_TITLE_EDIT'       =>  'Modifier l’avis pour ',
