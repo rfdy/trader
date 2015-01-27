@@ -78,12 +78,12 @@
 {% if EDIT && MODERATOR %}
     <h3>Edit History</h3>
     {% for revision in HISTORY %}
-        <div class="{{ cycle(['bg1', 'bg2'], loop.index0) }}">
-                <h3>{{ revision.date_created|date('M j, Y g:i A', false) }} {% if revision.username %} - {{ revision.username }} {% endif %}</h3>
-                <div class="inner">
-                    <strong>Summary:</strong> {{ revision.short_comment }} </br>
-                    <strong>Private Comment:</strong> <div>{{ revision.long_comment|nl2br }}</div>
-                </div>
+        <div class="page-body panel bg3">
+            <h3>{{ revision.date_created|date(U_DATE_FORMAT, false) }} - {% if revision.username %} {{ revision.username }} {% else %} {L_ORIGINAL_COMMENT} {% endif %}</h3>
+            <div class="inner">
+                <strong>{L_SUMMARY}{L_COLON}</strong> {{ revision.short_comment }} </br>
+                <strong>{L_PRIVATE_COMMENT}{L_COLON}</strong> <div>{{ revision.long_comment|raw|nl2br }}</div>
+            </div>
         </div>
     {% else %}
         <strong>No edits</strong>

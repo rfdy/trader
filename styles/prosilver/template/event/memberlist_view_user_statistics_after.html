@@ -5,6 +5,8 @@
         {% if TRADER_PERCENTAGE is defined %}
         ({{ TRADER_PERCENTAGE }}% Positive)
         {% endif %}
-        [ <a id="feedback_view" href="{U_FEEDBACK_VIEW}">View Trader Feedback</a> ]
+        {% if TRADER_HAS_VIEW_FEEDBACK_PERMISSION %}
+        [<a id="feedback_view" href="{U_FEEDBACK_VIEW}"> {L_TRADER_VIEW_FEEDBACK} </a>]
+        {% endif %}
     </dd>
 {% endif %}

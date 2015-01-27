@@ -3,11 +3,18 @@
     <strong>
         Trader Score{L_COLON}
     </strong>
-    <a href="{{ postrow.U_VIEW_FEEDBACK }}">
+    {% if TRADER_HAS_VIEW_FEEDBACK_PERMISSION %}
+        <a href="{{ postrow.U_VIEW_FEEDBACK }}">
+            {postrow.user_trader_rating}
+            {% if postrow.user_trader_percentage %}
+                ({{ postrow.user_trader_percentage }}% Positive)
+            {% endif %}
+        </a>
+    {% else %}
         {postrow.user_trader_rating}
         {% if postrow.user_trader_percentage %}
             ({{ postrow.user_trader_percentage }}% Positive)
         {% endif %}
-    </a>
+    {% endif %}
 </dd>
 {% endif %}

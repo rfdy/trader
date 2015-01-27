@@ -1,0 +1,81 @@
+<!-- INCLUDE mcp_header.html -->
+
+<h2>{L_REPORT_DETAILS}</h2>
+
+<div id="report" class="panel">
+    <div class="inner">
+
+        <div class="postbody">
+            <h3>{L_REPORT_REASON}</h3>
+            <p class="author">{L_REPORTED} {L_POST_BY_AUTHOR} {{ FEEDBACK.to_username }} &laquo; {{ REPORT.date_created|date('D M j, Y g:i a', false) }}</p>
+
+            <!-- IF S_REPORT_CLOSED -->
+            <p class="post-notice reported">{L_REPORT_CLOSED}</p>
+            <!-- ENDIF -->
+
+            <div class="content">
+                <!-- IF REPORT_TEXT -->
+                {REPORT_TEXT}
+                <!-- ELSE -->
+                {{ REPORT.reason }}
+                <!-- ENDIF -->
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+<form method="post" id="mcp_report" action="{S_CLOSE_ACTION}">
+
+    <fieldset class="submit-buttons">
+        <!-- IF not S_REPORT_CLOSED -->
+        <input class="button1" type="submit" value="{L_CLOSE_REPORT}" name="action[close]" /> &nbsp;
+        <!-- ENDIF -->
+        <input class="button2" type="submit" value="{L_DELETE_REPORT}" name="action[delete]" />
+        <input type="hidden" name="report_id_list[]" value="{REPORT_ID}" />
+        {S_FORM_TOKEN}
+    </fieldset>
+</form>
+
+
+<div class="panel">
+    <div class="inner">
+
+        <div class="postbody">
+            <h3><a href="{U_VIEW_POST}">{{ FEEDBACK.short_comment }}</a></h3>
+
+            <ul class="post-buttons">
+                <li>
+                    <a href="{U_EDIT}" title="{L_EDIT_POST}" class="button icon-button edit-icon">
+                        <span>{L_EDIT_POST}</span>
+                    </a>
+                </li>
+            </ul>
+
+            <p class="author">{MINI_POST_IMG} Rated {L_POST_BY_AUTHOR} {{ FEEDBACK.from_username }} &raquo; {{ FEEDBACK.date_created|date('D M j, Y g:i a', false) }}</p>
+
+
+            <!-- IF S_FEEDBACK_DELETED -->
+            <form method="post" id="mcp_approve" action="{U_APPROVE_ACTION}">
+
+                <p class="post-notice deleted">
+                    <input class="button2" type="submit" value="{L_DELETE}" name="action[disapprove]" /> &nbsp;
+                    <input class="button1" type="submit" value="{L_RESTORE}" name="action[restore]" />
+                    <!-- IF not S_FIRST_POST --><input type="hidden" name="mode" value="unapproved_posts" /><!-- ENDIF -->
+                    <input type="hidden" name="post_id_list[]" value="{POST_ID}" />
+                    {S_FORM_TOKEN}
+                </p>
+            </form>
+            <!-- ENDIF -->
+
+            <div class="content" id="post_details">
+                {{ FEEDBACK.long_comment }}
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+<!-- INCLUDE mcp_footer.html -->

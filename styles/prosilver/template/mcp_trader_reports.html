@@ -2,22 +2,25 @@
 
 <form id="mcp" method="post" action="{S_MCP_ACTION}">
 
-    <!-- IF not S_PM -->
-    <fieldset class="forum-selection">
-        <label for="fo">{L_FORUM}{L_COLON} <select name="f" id="fo">{S_FORUM_OPTIONS}</select></label>
-        <input type="submit" name="sort" value="{L_GO}" class="button2" />
-        {S_FORM_TOKEN}
-    </fieldset>
-    <!-- ENDIF -->
 
-    <h2>{L_TITLE}</h2>
+    <h2>{% if OPEN %}
+            {L_REPORT_OPEN_TITLE}
+        {% else %}
+            {L_REPORT_CLOSED_TITLE}
+        {% endif %}
+    </h2>
 
     <div class="panel">
         <div class="inner">
 
-            <p>{L_EXPLAIN}</p>
+            <p>{% if OPEN %}
+                    {L_REPORT_OPEN_DESC}
+                {% else %}
+                    {L_REPORT_CLOSED_DESC}
+                {% endif %}
+            </p>
 
-            <!-- IF .postrow -->
+            <!-- IF REPORTS -->
             <div class="action-bar top">
                 <div class="pagination">
                     {TOTAL_REPORTS}
@@ -40,51 +43,28 @@
             </ul>
             <ul class="topiclist cplist missing-column">
 
-                <!-- BEGIN postrow -->
+                {% for REPORT in REPORTS %}
                 <li class="row<!-- IF postrow.S_ROW_COUNT is odd --> bg1<!-- ELSE --> bg2<!-- ENDIF -->">
                     <dl>
-                        <!-- IF S_PM -->
                         <dt>
                         <div class="list-inner">
-                            <a href="{postrow.U_VIEW_DETAILS}" class="topictitle">{postrow.PM_SUBJECT}</a> {postrow.ATTACH_ICON_IMG}<br />
-                            <span>{L_MESSAGE_BY_AUTHOR} {postrow.PM_AUTHOR_FULL} &raquo; {postrow.PM_TIME}</span><br />
-                            <span>{L_MESSAGE_TO} {postrow.RECIPIENTS}</span>
+
+                            <a href="{REPORT.U_VIEW_DETAILS}" class="topictitle">{REPORT.short_comment}</a><br />
+                            <span>by {REPORT.from_username} &raquo; {{ REPORT.f_date_created|date('D M j, Y g:i a', false) }}</span><br />
+                            <span>to {REPORT.to_username}</span>
                             <div class="responsive-show" style="display: none;">
-                                {L_REPORTER}{L_COLON} {postrow.REPORTER_FULL} &laquo; {postrow.REPORT_TIME}
+                                {L_REPORTER}{L_COLON} {postrow.to_username} &laquo; {postrow.r_date_created}
                             </div>
                         </div>
                         </dt>
                         <dd class="moderation">
-                            <span>{postrow.REPORTER_FULL} &laquo; {postrow.REPORT_TIME}</span>
+                            <span>{REPORT.to_username} &laquo; {{ REPORT.r_date_created|date('D M j, Y g:i a', false) }}</span>
                         </dd>
-                        <!-- ELSE -->
-                        <dt>
-                        <div class="list-inner">
-                            <a href="{postrow.U_VIEW_DETAILS}" class="topictitle">{postrow.POST_SUBJECT}</a> {postrow.ATTACH_ICON_IMG}<br />
-                            <span>{L_POSTED} {L_POST_BY_AUTHOR} {postrow.POST_AUTHOR_FULL} &raquo; {postrow.POST_TIME}</span>
-                            <div class="responsive-show" style="display: none;">
-                                {L_REPORTER}{L_COLON} {postrow.REPORTER_FULL} &laquo; {postrow.REPORT_TIME}<br />
-                                <!-- IF postrow.U_VIEWFORUM -->{L_FORUM}{L_COLON} <a href="{postrow.U_VIEWFORUM}">{postrow.FORUM_NAME}</a><!-- ELSE -->{postrow.FORUM_NAME}<!-- ENDIF -->
-                            </div>
-                        </div>
-                        </dt>
-                        <dd class="moderation">
-						<span>{postrow.REPORTER_FULL} &laquo; {postrow.REPORT_TIME}<br />
-						<!-- IF postrow.U_VIEWFORUM -->{L_FORUM}{L_COLON} <a href="{postrow.U_VIEWFORUM}">{postrow.FORUM_NAME}</a><!-- ELSE -->{postrow.FORUM_NAME}<!-- ENDIF --></span>
-                        </dd>
-                        <!-- ENDIF -->
-                        <dd class="mark"><input type="checkbox" name="report_id_list[]" value="{postrow.REPORT_ID}" /></dd>
+                        <dd class="mark"><input type="checkbox" name="report_id_list[]" value="{REPORT.report_id}" /></dd>
                     </dl>
                 </li>
-                <!-- END postrow -->
+                {% endfor %}
             </ul>
-
-            <fieldset class="display-options">
-                <label>{L_DISPLAY_POSTS}{L_COLON} {S_SELECT_SORT_DAYS}</label>
-                <label>{L_SORT_BY} {S_SELECT_SORT_KEY}</label><label>{S_SELECT_SORT_DIR}</label>
-                <!-- IF TOPIC_ID --><label><input type="checkbox" class="radio" name="t" value="{TOPIC_ID}" checked="checked" />&nbsp; <strong>{L_ONLY_TOPIC}</strong></label><!-- ENDIF -->
-                <input type="submit" name="sort" value="{L_GO}" class="button2" />
-            </fieldset>
 
             <hr />
 
@@ -106,7 +86,7 @@
         </div>
     </div>
 
-    <!-- IF .postrow -->
+    <!-- IF REPORTS -->
     <fieldset class="display-actions">
         <input class="button2" type="submit" value="{L_DELETE_REPORTS}" name="action[delete]" />
         <!-- IF not S_CLOSED -->&nbsp;<input class="button1" type="submit" name="action[close]" value="{L_CLOSE_REPORTS}" /><!-- ENDIF -->

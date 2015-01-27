@@ -4,7 +4,8 @@ namespace rfd\trader\Controller;
 
 use rfd\trader\Service\RatingsManager;
 
-class Trader {
+class Trader
+{
     const MIN_SHORT_LENGTH = 10;
     const MAX_SHORT_LENGTH = 255;
     const MAX_LONG_LENGTH = 1000;
@@ -62,32 +63,37 @@ class Trader {
     protected $phpEx;
 
     public function __construct(
-                        \phpbb\auth\auth $auth,
-                        \phpbb\request\request $request,
-                        \phpbb\user $user,
-                        \phpbb\db\driver\driver $db,
-                        \phpbb\template\twig\twig $template,
-                        \phpbb\controller\helper $helper,
-                        \rfd\trader\Service\RatingsManager $manager,
-                        \phpbb\config\db $config,
-                        \phpbb\pagination $pagination,
-                        $phpbb_root_path,
-                        $phpEx)
+        \phpbb\auth\auth $auth,
+        \phpbb\request\request $request,
+        \phpbb\user $user,
+        \phpbb\db\driver\driver $db,
+        \phpbb\template\twig\twig $template,
+        \phpbb\controller\helper $helper,
+        \rfd\trader\Service\RatingsManager $manager,
+        \phpbb\config\db $config,
+        \phpbb\pagination $pagination,
+        $phpbb_root_path,
+        $phpEx)
     {
-        $this->auth             = $auth;
-        $this->request          = $request;
-        $this->user             = $user;
-        $this->db               = $db;
-        $this->template         = $template;
-        $this->helper           = $helper;
-        $this->manager          = $manager;
-        $this->config           = $config;
-        $this->pagination       = $pagination;
-        $this->phpbb_root_path  = $phpbb_root_path;
-        $this->phpEx            = $phpEx;
+        $this->auth = $auth;
+        $this->request = $request;
+        $this->user = $user;
+        $this->db = $db;
+        $this->template = $template;
+        $this->helper = $helper;
+        $this->manager = $manager;
+        $this->config = $config;
+        $this->pagination = $pagination;
+        $this->phpbb_root_path = $phpbb_root_path;
+        $this->phpEx = $phpEx;
     }
 
-    public function defaultAction() {
+    public function defaultAction()
+    {
+        if(!($this->manager->hasLeaveFeedbackPermission())) {
+            trigger_error($this->user->lang('E_CANNOT_LEAVE_FEEDBACK'));
+        }
+
         $topic_id = $this->request->variable('topic_id', 0);
 
         $feedback_reply_id = $this->request->variable('reply_id', 0);
@@ -100,8 +106,6 @@ class Trader {
             $feedback_row = $this->manager->getAllFeedbackInfo($feedback_reply_id);
         }
 
-
-
         $topic_id = $topic_id ? $topic_id : $feedback_row['topic_id'];
 
         $topic_row = $this->getTopic($topic_id);
@@ -110,7 +114,7 @@ class Trader {
         $err_comments = array();
 
         $feedback_route = $this->helper->route('rfd_trader_view', array(
-            'u'  =>  $user_id,
+            'u' => $user_id,
         ));
 
         $back_url = '<a href=' . append_sid(generate_board_url() . "/viewtopic.php?t=" . $topic_id) . '>Back</a>';
@@ -148,8 +152,7 @@ class Trader {
         }
 
         if ($submit && !$err_comments['short'] && !$err_comments['long']) {
-            if (!check_form_key('give_feedback_form'))
-            {
+            if (!check_form_key('give_feedback_form')) {
                 trigger_error('FORM_INVALID');
             }
 
@@ -165,29 +168,29 @@ class Trader {
             );
 
             $trader_profile_url = '<a href=' . $this->helper->route('rfd_trader_view', array(
-                    'u'  =>  $to_user_row['user_id'],
+                    'u' => $to_user_row['user_id'],
                 )) . '>View Profile</a>';
             trigger_error($this->user->lang('FEEDBACK_SUCCESS') . '<br /><br />' . $trader_profile_url);
         }
 
         add_form_key('give_feedback_form');
-        $this->template->assign_vars(array (
-            'ERROR'                 =>  $err_comments,
-            'RATING'                =>  $rating,
-            'SHORT'                 =>  $short_comment,
-            'LONG'                  =>  $long_comment,
-            'USERNAME'              =>  $to_user_row['username'],
-            'TOPIC_TITLE'           =>  $topic_row['topic_title'],
-            'TOPIC_TYPE'            =>  $topic_row['topic_trader_type'],
-            'TRADER_USERNAME'       =>  $to_user_row['username'],
-            'U_TRADER_FEEDBACK'     =>  $feedback_route,
-            'U_TRADER_PROFILE'      =>  append_sid("{$this->phpbb_root_path}memberlist.$this->phpEx", 'mode=viewprofile&amp;u=' . $to_user_row['user_id']),
+        $this->template->assign_vars(array(
+            'ERROR' => $err_comments,
+            'RATING' => $rating,
+            'SHORT' => $short_comment,
+            'LONG' => $long_comment,
+            'USERNAME' => $to_user_row['username'],
+            'TOPIC_TITLE' => $topic_row['topic_title'],
+            'TOPIC_TYPE' => $topic_row['topic_trader_type'],
+            'TRADER_USERNAME' => $to_user_row['username'],
+            'U_TRADER_FEEDBACK' => $feedback_route,
+            'U_TRADER_PROFILE' => append_sid("{$this->phpbb_root_path}memberlist.$this->phpEx", 'mode=viewprofile&amp;u=' . $to_user_row['user_id']),
         ));
         return $this->helper->render('TraderFeedback.html', 'Give Feedback');
     }
 
-    public function editFeedbackAction() {
-
+    public function editFeedbackAction()
+    {
         $feedback_id = $this->request->variable('feedback_id', 0);
         $feedback_row = $this->manager->getAllFeedbackInfo($feedback_id);
 
@@ -198,7 +201,7 @@ class Trader {
         $return_user_id = $this->request->variable('u', $feedback_row['to_user_id']);
         $return_user = $this->getUser($return_user_id);
         $feedback_route = $this->helper->route('rfd_trader_view', array(
-            'u'  =>  $return_user_id,
+            'u' => $return_user_id,
         ));
         $trader_profile_url = $trader_profile_url = '<a href=' . $feedback_route . '>Back</a>';
 
@@ -207,7 +210,7 @@ class Trader {
         }
 
         $edit_history = $this->manager->getFeedbackComments($feedback_id);
-        unset($edit_history[0]);
+//        unset($edit_history[0]);
 
         $submit = $this->request->is_set_post('submit');
         $to_user_row = $this->getUser($feedback_row['to_user_id']);
@@ -238,7 +241,7 @@ class Trader {
 
         if ($submit && !$err_comments['short'] && !$err_comments['long']) {
             if ($delete_feedback != $feedback_row['is_deleted']) {
-                if ($delete_feedback){
+                if ($delete_feedback) {
                     $this->manager->deleteFeedback($feedback_row, $this->isEditMod());
                 } else {
                     $this->manager->revertDelete($feedback_row);
@@ -254,41 +257,48 @@ class Trader {
             trigger_error($this->user->lang('E_SUCCESSFUL_EDIT') . '<br /><br />' . $trader_profile_url);
         }
 
-        $this->template->assign_vars(array (
-            'EDIT'                  =>  true,
-            'MODERATOR'             =>  $this->isEditMod(),
-            'HISTORY'               =>  $edit_history,
-            'DELETED'               =>  $delete_feedback,
-            'ERROR'                 =>  $err_comments,
-            'RATING'                =>  $rating,
-            'SHORT'                 =>  $new_short,
-            'LONG'                  =>  $new_long,
-            'USERNAME'              =>  $to_user_row['username'],
-            'TOPIC_TITLE'           =>  $feedback_row['topic_title'],
-            'TOPIC_TYPE'            =>  $feedback_row['topic_type'],
-            'TRADER_USERNAME'       =>  $return_user['username'],
-            'U_TRADER_PROFILE'      =>  append_sid("{$this->phpbb_root_path}memberlist.$this->phpEx", 'mode=viewprofile&amp;u=' . $return_user_id),
-            'U_TRADER_FEEDBACK'     =>  $feedback_route,
+        $this->template->assign_vars(array(
+            'EDIT' => true,
+            'MODERATOR' => $this->isEditMod(),
+            'HISTORY' => $edit_history,
+            'DELETED' => $delete_feedback,
+            'ERROR' => $err_comments,
+            'RATING' => $rating,
+            'SHORT' => $new_short,
+            'LONG' => $new_long,
+            'USERNAME' => $to_user_row['username'],
+            'TOPIC_TITLE' => $feedback_row['topic_title'],
+            'TOPIC_TYPE' => $feedback_row['topic_type'],
+            'TRADER_USERNAME' => $return_user['username'],
+            'U_TRADER_PROFILE' => append_sid("{$this->phpbb_root_path}memberlist.$this->phpEx", 'mode=viewprofile&amp;u=' . $return_user_id),
+            'U_TRADER_FEEDBACK' => $feedback_route,
+            'U_DATE_FORMAT' => $this->user->data['user_dateformat']
         ));
 
         return $this->helper->render('TraderFeedback.html', 'Edit Feedback');
     }
 
-    public function viewUserFeedbackAction() {
+    public function viewUserFeedbackAction()
+    {
+        // Trigger an error if user does not have view feedback permissions
+        if(!($this->manager->hasViewFeedbackPermission())) {
+            trigger_error($this->user->lang('E_CANNOT_VIEW_FEEDBACK'));
+        }
+
         $user_id = $this->request->variable('u', 0);
         $tab = $this->request->variable('tab', 'all');
-        $start	= $this->request->variable('start', 0);
+        $start = $this->request->variable('start', 0);
 
         $is_edit_mod = $this->isEditMod();
 
         $action = $this->request->variable('action', 'list');
         if ($action == 'list') {
             $valid_tabs = array(
-                'all'   => RatingsManager::TAB_TYPE_ALL,
-                'buy'   => RatingsManager::TOPIC_TYPE_BUY,
-                'sell'  => RatingsManager::TOPIC_TYPE_SELL,
+                'all' => RatingsManager::TAB_TYPE_ALL,
+                'buy' => RatingsManager::TOPIC_TYPE_BUY,
+                'sell' => RatingsManager::TOPIC_TYPE_SELL,
                 'trade' => RatingsManager::TOPIC_TYPE_TRADE,
-                'left'  => RatingsManager::TAB_TYPE_LEFT,
+                'left' => RatingsManager::TAB_TYPE_LEFT,
             );
 
             if (!isset($valid_tabs[$tab])) {
@@ -334,12 +344,12 @@ class Trader {
                 if ($tab == "left") {
                     $user_row = $this->fetch_user_row($this->db, $feedback['to_user_id']);
                     $view_feedback_url = $this->helper->route('rfd_trader_view', array(
-                        'u'  =>  $feedback['to_user_id'],
+                        'u' => $feedback['to_user_id'],
                     ));
                 } else {
                     $user_row = $this->fetch_user_row($this->db, $feedback['from_user_id']);
                     $view_feedback_url = $this->helper->route('rfd_trader_view', array(
-                        'u'  =>  $feedback['from_user_id'],
+                        'u' => $feedback['from_user_id'],
                     ));
                 }
                 $feedback['U_VIEW_FEEDBACK'] = $view_feedback_url;
@@ -355,24 +365,24 @@ class Trader {
 
                     if ($is_edit_mod
                         || ($feedback['from_user_id'] == $this->user->data['user_id'])
-                        || ($feedback['to_user_id'] == $this->user->data['user_id']))
-                    {
+                        || ($feedback['to_user_id'] == $this->user->data['user_id'])
+                    ) {
                         $feedback['long_comment'] = $comments['long_comment'];
                     }
                 }
 
                 if ($is_edit_mod || $this->canEditFeedback($feedback['date_created'], $feedback['from_user_id'])) {
                     $edit_feedback_url = $this->helper->route('rfd_trader_edit_feedback', array(
-                        'feedback_id'  =>  $feedback['feedback_id'],
-                        'u'            =>  $user_id,
+                        'feedback_id' => $feedback['feedback_id'],
+                        'u' => $user_id,
                     ));
                     $feedback['U_EDIT_FEEDBACK'] = $edit_feedback_url;
                 }
 
-                if ($this->manager->canGiveFeedback($feedback['from_user_id'], $this->user->data['user_id'], $feedback['topic_id'])) {
+                if($this->canReplyToFeedback($feedback['from_user_id'], $feedback['to_user_id'], $feedback['topic_id'])) {
                     $feedback['U_REPLY_FEEDBACK'] = $this->helper->route('rfd_trader_feedback', array(
-                        'reply_id'      => $feedback['feedback_id'],
-                        'u'             => $user_id,
+                        'reply_id' => $feedback['feedback_id'],
+                        'u' => $user_id,
                     ));
                 }
 
@@ -383,31 +393,31 @@ class Trader {
                     $feedback['U_REPORT_FEEDBACK'] = append_sid(generate_board_url() . '/trader/view-feedback/?action=report&amp;id=' . $feedback['feedback_id']);
                 }
 
-                $feedback['topic_url'] = append_sid(generate_board_url() . "/viewtopic.php/?t=" . $feedback['topic_id']);
+                $feedback['topic_url'] = append_sid(generate_board_url() . "/viewtopic.php?t=" . $feedback['topic_id']);
                 $feedback['date_created'] = new \DateTime('@' . $feedback['date_created']);
                 $feedback['date_created']->setTimezone($timezone);
                 $feedbacks[$key] = $feedback;
             }
 
             $trader_username_full = get_username_string('full', $user_page_row['user_id'], $user_page_row['username'], $user_page_row['user_colour']);
-            $this->template->assign_vars(array (
+            $this->template->assign_vars(array(
                 'TRADER_USERNAME_FULL' => $trader_username_full,
-                'TRADER_USERNAME'      => $user_page_row['username'],
-                'U_TRADER_PROFILE'     => append_sid("{$this->phpbb_root_path}memberlist.$this->phpEx", 'mode=viewprofile&amp;u=' . $user_page_row['user_id']),
-                'trader_stats'         => $trader_stats,
-                'recent_feedback'      => $this->manager->getRecentUserFeedbackCounts($user_id),
-                'U_ACTION_TAB_ALL'     => $this->helper->route("rfd_trader_view", array('u' => $user_id, 'tab' => 'all')),
-                'U_ACTION_TAB_BUY'     => $this->helper->route("rfd_trader_view", array('u' => $user_id, 'tab' => 'buy')),
-                'U_ACTION_TAB_SELL'    => $this->helper->route("rfd_trader_view", array('u' => $user_id, 'tab' => 'sell')),
-                'U_ACTION_TAB_TRADE'   => $this->helper->route("rfd_trader_view", array('u' => $user_id, 'tab' => 'trade')),
-                'U_ACTION_TAB_LEFT'    => $this->helper->route("rfd_trader_view", array('u' => $user_id, 'tab' => 'left')),
-                'CURRENT_TAB'          => $tab,
-                'feedbacks'            => $feedbacks,
-                'TOTAL_FEEDBACKS'      => $num_feedbacks,
+                'TRADER_USERNAME' => $user_page_row['username'],
+                'U_TRADER_PROFILE' => append_sid("{$this->phpbb_root_path}memberlist.$this->phpEx", 'mode=viewprofile&amp;u=' . $user_page_row['user_id']),
+                'trader_stats' => $trader_stats,
+                'recent_feedback' => $this->manager->getRecentUserFeedbackCounts($user_id),
+                'U_ACTION_TAB_ALL' => $this->helper->route("rfd_trader_view", array('u' => $user_id, 'tab' => 'all')),
+                'U_ACTION_TAB_BUY' => $this->helper->route("rfd_trader_view", array('u' => $user_id, 'tab' => 'buy')),
+                'U_ACTION_TAB_SELL' => $this->helper->route("rfd_trader_view", array('u' => $user_id, 'tab' => 'sell')),
+                'U_ACTION_TAB_TRADE' => $this->helper->route("rfd_trader_view", array('u' => $user_id, 'tab' => 'trade')),
+                'U_ACTION_TAB_LEFT' => $this->helper->route("rfd_trader_view", array('u' => $user_id, 'tab' => 'left')),
+                'CURRENT_TAB' => $tab,
+                'feedbacks' => $feedbacks,
+                'TOTAL_FEEDBACKS' => $num_feedbacks,
             ));
 
             $base_url = $this->helper->route('rfd_trader_view', array(
-                'u'  =>  $user_id,
+                'u' => $user_id,
             ));
 
             $this->pagination->generate_template_pagination($base_url, 'pagination', 'start', $num_feedbacks, self::NUM_PER_PAGE, $start);
@@ -420,33 +430,44 @@ class Trader {
         return $this->helper->render('view_user_feedback.html', 'Viewing Trader Feedback - User ' . $user_page_row['username']);
     }
 
-    private function report_feedback_action($request, $user) {
+
+    private function report_feedback_action($request, $user)
+    {
         $id = $request->variable('id', 0);
+        $user_id = (int)$user->data['user_id'];
 
-        //confirm_box(false, "Are you sure you wish to report this feedback?");
+        // check that this is ajax request and that the user reporting the feedback is the recipient of the feedback
+        if($request->is_ajax() && $user_id == $this->manager->getFeedbackRecipientID($id)) {
+            $reason = $request->variable('reason', '');
 
-        //if (confirm_box(true))
-        //{
-            // REPORT the feedback
-            $this->manager->report_feedback($id);
+            confirm_box(false, $user->lang['REPORT_DESC'], '', 'report_feedback_form.html', "trader/view-feedback/?action=report&id=".$id);
 
-            if ($request->is_ajax())
-            {
-                $json_response = new \phpbb\json_response;
-                $json_response->send(array(
-                    'MESSAGE_TITLE'	=> $user->lang['INFORMATION'],
-                    'MESSAGE_TEXT'	=> 'This feedback has been successfully reported.',
-                    'REFRESH_DATA'	=> array(
-                        'time'	=> 3
-                    )
-                ));
+            if (confirm_box(true)) {
+
+//             REPORT the feedback
+                $this->manager->report_feedback($id, $reason);
+
+                if ($request->is_ajax()) {
+                    $json_response = new \phpbb\json_response;
+                    $json_response->send(array(
+                        'MESSAGE_TITLE' => $user->lang['INFORMATION'],
+                        'MESSAGE_TEXT' => $user->lang['REPORT_SUCCESS'],
+                        'REFRESH_DATA' => array(
+                            'time' => 3
+                        )
+                    ));
+                }
             }
-        //}
+        } else {
+            // redirect to previous page if report is cancelled, or front page if no referrer
+            redirect($request->header('referer', './index.php'));
+        }
     }
 
 
-    private function getUser($user_id) {
-        $user_id = (int) $user_id;
+    private function getUser($user_id)
+    {
+        $user_id = (int)$user_id;
 
         $result = $this->db->sql_query('SELECT user_id, user_type, username FROM ' . USERS_TABLE . ' WHERE user_id=' . $this->db->sql_escape($user_id));
         $user_row = $this->db->sql_fetchrow($result);
@@ -454,14 +475,16 @@ class Trader {
         return $user_row;
     }
 
-    private function getTopic($topic_id) {
-        $topic_id = (int) $topic_id;
+    private function getTopic($topic_id)
+    {
+        $topic_id = (int)$topic_id;
 
         $result = $this->db->sql_query('SELECT topic_id, topic_trader_type, topic_title, topic_poster FROM ' . TOPICS_TABLE . ' WHERE topic_id=' . $topic_id);
         return $this->db->sql_fetchrow($result);
     }
 
-    private function fetch_user_row($db, $user_id) {
+    private function fetch_user_row($db, $user_id)
+    {
         $sql = 'SELECT * FROM ' . USERS_TABLE . ' WHERE user_id=' . $user_id;
         $result = $db->sql_query($sql);
         $user_row = $db->sql_fetchrow($result);
@@ -469,7 +492,8 @@ class Trader {
         return $user_row;
     }
 
-    private function canEditFeedback($date_created, $from_user_id) {
+    private function canEditFeedback($date_created, $from_user_id)
+    {
 
         $time_diff = ($this->request->server('REQUEST_TIME') - $date_created) / 60;
 
@@ -482,7 +506,19 @@ class Trader {
     /**
      * Return true iff current user has edit feedback permissions
      */
-    private function isEditMod() {
-        return ($this->auth->acl_get('m_feedback_edit') || $this->auth->acl_get('a_trader'));
+    private function isEditMod()
+    {
+        return ($this->auth->acl_get(RatingsManager::M_TRADER_EDIT) || $this->auth->acl_get(RatingsManager::A_TRADER));
+    }
+
+    /**
+     * Return true iff current user can reply to the given feedback
+     *
+     * @param $from_id - The user id of the sender of the feedback
+     * @param $to_id - The user id of the receiver of the feedback
+     * @param $topic_id - The topic id of the feedback
+     */
+    private function canReplyToFeedback($from_id, $to_id, $topic_id) {
+        return ($this->user->data['user_id'] == $to_id) && $this->manager->canGiveFeedback($from_id, $this->user->data['user_id'], $topic_id);
     }
 }

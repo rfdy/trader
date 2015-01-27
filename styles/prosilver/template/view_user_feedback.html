@@ -1,4 +1,5 @@
 <!-- INCLUDECSS ../theme/trader.css -->
+<!-- INCLUDEJS trader.js -->
 <!-- INCLUDE overall_header.html -->
 <h2>Trader Feedback for {{ TRADER_USERNAME_FULL }}</h2>
 
@@ -109,7 +110,13 @@
 
                                             {% if fdb_row.long_comment %}
                                                 <li class="trader-option">
-                                                    <a href="javascript:;" class="button icon-button info-icon" title="Comment {% if CURRENT_TAB == 'left' %}to{% else %}from{% endif %} {{ fdb_row.table_username }}: {{ fdb_row.long_comment }}">
+                                                        <a href="javascript:void(0);" class="button icon-button responsive-menu-link" title="See private comment"
+                                                            onclick="
+                                                                // alternate display of private comment
+                                                                alternate_display_tablerow_id('fdb_comment-{{ fdb_row.feedback_id }}');
+                                                                // hide all other private comments
+                                                                hide_elements_with_class('trader-long-comment', 'fdb_comment-{{ fdb_row.feedback_id }}');
+                                                            ">
                                                         <span class="trader-span">View Long Comment</span>
                                                     </a>
                                                 </li>
@@ -118,6 +125,13 @@
 
                                     </td>
                                 </tr>
+                                {% if fdb_row.long_comment %}
+                                   <tr id="fdb_comment-{{ fdb_row.feedback_id }}" class="{{ cycle(['bg1', 'bg2'], loop.index0) }} trader-row trader-long-comment" style="display: none;">
+                                       <td colspan="100%">
+                                           {{ fdb_row.long_comment|raw|nl2br }}
+                                       </td>
+                                    </tr>
+                                {% endif %}
                             {% else %}
                             <tr class="{{ cycle(['bg1', 'bg2'], loop.index0) }}">
                                 <td colspan="6" class="no-feedback">There is no feedback to display.</td>

@@ -2,6 +2,8 @@
 
 namespace rfd\trader\migrations;
 
+use rfd\trader\Service\RatingsManager;
+
 class release_0_0_1 extends \phpbb\db\migration\migration {
     public function effectively_installed() {
         $sql = 'SELECT config_value
@@ -108,28 +110,46 @@ class release_0_0_1 extends \phpbb\db\migration\migration {
         return array(
             array('config.add', array('phpbb_trader_version', '0.0.1')),
 
-            array('permission.add', array('a_trader', true)),
-            array('permission.add', array('m_feedback_edit', true)),
+            array('permission.add', array(RatingsManager::A_TRADER, true)),
+            array('permission.add', array(RatingsManager::M_TRADER_EDIT, true)),
+            array('permission.add', array(RatingsManager::U_TRADER_VIEW, true)),
+            array('permission.add', array(RatingsManager::U_TRADER_POST, true)),
 
-            array('permission.permission_set', array('ROLE_ADMIN_FULL','a_trader')),
-            array('permission.permission_set', array('ROLE_ADMIN_STANDARD','a_trader')),
-            array('permission.permission_set', array('ROLE_MOD_FULL','m_feedback_edit')),
+            array('permission.permission_set', array('ROLE_ADMIN_FULL',RatingsManager::A_TRADER)),
+            array('permission.permission_set', array('ROLE_ADMIN_STANDARD',RatingsManager::A_TRADER)),
+            array('permission.permission_set', array('ROLE_MOD_FULL',RatingsManager::M_TRADER_EDIT)),
 
-            array('module.add', array('acp', 'ACP_CAT_USERGROUP', 'Trader')),
+            // set default view/leave feedback user permissions for roles
+            array('permission.permission_set', array('ROLE_USER_STANDARD', array(RatingsManager::U_TRADER_VIEW, RatingsManager::U_TRADER_POST))),
+            array('permission.permission_set', array('ROLE_USER_NEW_MEMBER', array(RatingsManager::U_TRADER_VIEW, RatingsManager::U_TRADER_POST))),
+            array('permission.permission_set', array('ROLE_USER_NOPM', array(RatingsManager::U_TRADER_VIEW, RatingsManager::U_TRADER_POST))),
+            array('permission.permission_set', array('ROLE_USER_NOAVATAR', array(RatingsManager::U_TRADER_VIEW, RatingsManager::U_TRADER_POST))),
+            array('permission.permission_set', array('ROLE_USER_LIMITED', array(RatingsManager::U_TRADER_VIEW, RatingsManager::U_TRADER_POST))),
+            array('permission.permission_set', array('ROLE_USER_FULL', array(RatingsManager::U_TRADER_VIEW, RatingsManager::U_TRADER_POST))),
 
-            array('module.add', array('acp', 'Trader', array(
-                'module_basename'	=> '\rfd\trader\acp\main_module',
-                'module_langname'	=> 'Recalculate Trader Rating',
-                'module_mode'	=> 'recalculate_trader_rating',
-                'module_auth'	=> 'acl_a_trader && acl_a_board',
-            ))),
+            // set default view/leave feedback user permissions for groups
+            array('permission.permission_set', array('ADMINISTRATORS', array(RatingsManager::U_TRADER_VIEW, RatingsManager::U_TRADER_POST), 'group')),
+            array('permission.permission_set', array('BOTS', array(RatingsManager::U_TRADER_VIEW, RatingsManager::U_TRADER_POST), 'group')),
+            array('permission.permission_set', array('GLOBAL_MODERATORS', array(RatingsManager::U_TRADER_VIEW, RatingsManager::U_TRADER_POST), 'group')),
+            array('permission.permission_set', array('NEWLY_REGISTERED', array(RatingsManager::U_TRADER_VIEW, RatingsManager::U_TRADER_POST), 'group')),
+            array('permission.permission_set', array('REGISTERED', array(RatingsManager::U_TRADER_VIEW, RatingsManager::U_TRADER_POST), 'group')),
+            array('permission.permission_set', array('GUESTS', RatingsManager::U_TRADER_VIEW, 'group')),
+
+//            array('module.add', array('acp', 'ACP_CAT_USERGROUP', 'Trader')),
+
+//            array('module.add', array('acp', 'Trader', array(
+//                'module_basename'	=> '\rfd\trader\acp\main_module',
+//                'module_langname'	=> 'Recalculate Trader Rating',
+//                'module_mode'	=> 'recalculate_trader_rating',
+//                'module_auth'	=> 'acl_a_trader && acl_a_board',
+//            ))),
 
             // MCP: Reported Trader feedbacks
             array('module.add', array('mcp', 'MCP_REPORTS', array(
                 'module_basename'	=> '\rfd\trader\mcp\mcp_trader_module',
                 'module_langname'	=> 'Open Trader reports',
                 'module_mode'	=> 'open_trader_reports',
-                'module_auth'	=> 'acl_m_feedback_edit || acl_a_trader',
+                'module_auth'	=> 'acl_m_trader_edit || acl_a_trader',
             ))),
 
             // MCP: Reported Trader feedbacks
@@ -137,7 +157,15 @@ class release_0_0_1 extends \phpbb\db\migration\migration {
                 'module_basename'	=> '\rfd\trader\mcp\mcp_trader_module',
                 'module_langname'	=> 'Closed Trader reports',
                 'module_mode'	=> 'closed_trader_reports',
-                'module_auth'	=> 'acl_m_feedback_edit || acl_a_trader',
+                'module_auth'	=> 'acl_m_trader_edit || acl_a_trader',
+            ))),
+
+            // MCP: Report Feedback details
+            array('module.add', array('mcp', 'MCP_REPORTS', array(
+                'module_basename'	=> '\rfd\trader\mcp\mcp_trader_module',
+                'module_langname'	=> 'Trader Report details',
+                'module_mode'	=> 'trader_report_details',
+                'module_auth'	=> 'acl_m_trader_edit || acl_a_trader',
             ))),
 
         );

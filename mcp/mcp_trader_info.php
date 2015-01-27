@@ -21,6 +21,11 @@ class mcp_trader_info
                                     'auth'  => 'acl_m_trader_edit && acl_a_trader',
                                     'cat'   => array('MCP_REPORTS')
                             ),
+                'trader_report_details' => array(
+                                    'title' =>  'Trader Report details',
+                                    'auth'  =>  'acl_m_trader_edit && acl_a_trader',
+                                    'cat'   =>  array('MCP_REPORTS')
+                            ),
             ),
         );
     }

@@ -2,6 +2,7 @@
 
 namespace rfd\trader\Event;
 
+use rfd\trader\Service\RatingsManager;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface,
     phpbb\event\data                as phpbbEvent,
     phpbb\user                      as phpbbUser,
@@ -36,6 +37,7 @@ class TraderListener implements EventSubscriberInterface {
     protected $manager;
 
     private $phpbb_root_path, $phpEx;
+
     /**
      * This flag is set at runtime, where the order of events really matters.
      *
@@ -75,6 +77,13 @@ class TraderListener implements EventSubscriberInterface {
             'core.viewtopic_modify_post_row'        => 'viewtopic_modify_post_row',
             'core.memberlist_prepare_profile_data'  => 'memberlist_prepare_profile_data',
             'core.viewtopic_get_post_data'          => 'viewtopic_get_post_data',
+            'core.modify_mcp_modules_display_option'    =>  'modify_mcp_modules_display_option',
+
+            // API events
+            'rfd.api.get_forum'                     => 'rfd_api_get_forum',
+            //'rfd.api.get_user'                      => 'rfd_api_get_user',
+
+            'rfd.api.get_topic'                     => 'rfd_api_get_topic'
         );
     }
 
@@ -90,8 +99,12 @@ class TraderListener implements EventSubscriberInterface {
 
         // Add permissions for infractions
         $permissions = $data['permissions'];
-        $permissions['a_trader']        = array('lang' => 'ACL_A_TRADER',         'cat' => 'misc');
-        $permissions['m_feedback_edit'] = array('lang' => 'ACL_M_FEEDBACK_EDIT',  'cat' => 'trader');
+        $permissions[RatingsManager::A_TRADER]        = array('lang' => 'ACL_A_TRADER',         'cat' => 'misc');
+        $permissions[RatingsManager::M_TRADER_EDIT] = array('lang' => 'ACL_M_TRADER_EDIT',  'cat' => 'trader');
+
+        // Add permissions for viewing and leaving feedback
+        $permissions[RatingsManager::U_TRADER_VIEW] = array('lang' => 'ACL_U_TRADER_VIEW', 'cat' => 'misc');
+        $permissions[RatingsManager::U_TRADER_POST] = array('lang' => 'ACL_U_TRADER_POST', 'cat' => 'misc');
 
         $data['permissions'] = $permissions;
 
@@ -190,12 +203,14 @@ class TraderListener implements EventSubscriberInterface {
             return false;
         }
 
-
-
         $feedback_url = $this->helper->route('rfd_trader_feedback', array(
             'topic_id'  =>  $data['row']['topic_id'],
         ));
-        $data['post_row']['U_GIVE_FEEDBACK'] = $feedback_url;
+
+        // Set U_GIVE_FEEDBACK variable iff user has leave feedback permission
+        if($this->manager->hasLeaveFeedbackPermission()) {
+            $data['post_row']['U_GIVE_FEEDBACK'] = $feedback_url;
+        }
 
         $view_feedback_url = $this->helper->route('rfd_trader_view', array(
             'u'  =>  $data['row']['user_id'],
@@ -224,8 +239,6 @@ class TraderListener implements EventSubscriberInterface {
      */
     public function viewforum_modify_topicrow(phpbbEvent $event) {
         global $forum_data;
-
-
 
         if ($forum_data['enabled_trader_types']) { // only set the trader type if trader is enabled
             $data = $event->get_data();
@@ -343,6 +356,8 @@ class TraderListener implements EventSubscriberInterface {
      * @return bool
      */
     public function memberlist_prepare_profile_data(phpbbEvent $event) {
+        global $template;
+
         $data = $event->get_data();
 
         $view_feedback_url = $this->helper->route('rfd_trader_view', array(
@@ -355,6 +370,9 @@ class TraderListener implements EventSubscriberInterface {
         $data['template_data']['TRADER_RATING'] = $positive - $negative;
         $data['template_data']['TRADER_PERCENTAGE'] = $this->manager->getPositivePercent($positive, $negative);
 
+        // Set view feedback permission
+        $template->assign_var('TRADER_HAS_VIEW_FEEDBACK_PERMISSION', $this->manager->hasViewFeedbackPermission());
+
         $event->set_data($data);
     }
 
@@ -363,5 +381,63 @@ class TraderListener implements EventSubscriberInterface {
         $data = $event->get_data();
 
         $template->assign_var('TOPIC_TRADER_TYPE', $data['topic_data']['topic_trader_type']);
+
+        // Set view feedback permission
+        $template->assign_var('TRADER_HAS_VIEW_FEEDBACK_PERMISSION', $this->manager->hasViewFeedbackPermission());
     }
+
+    /**
+     * Add trader status to the forum data
+     * @param phpbbEvent $event
+     */
+    public function rfd_api_get_forum(phpbbEvent $event)
+    {
+        $data = $event->get_data();
+        $forum = $data['forum'];
+        $raw_forum = $data['raw_forum'];
+
+        $forum['trader_status'] = $this->manager->getTraderStatusString($raw_forum['enabled_trader_types']);
+
+        $data['forum'] = $forum;
+        $event->set_data($data);
+    }
+
+
+    /**
+     * Hide the trader report details module from the MCP sidebar by default
+     *
+     * @param phpbbEvent $event
+     */
+    public function modify_mcp_modules_display_option(phpbbEvent $event) {
+        global $module;
+
+        $module->set_display('\rfd\trader\mcp\mcp_trader_module', 'trader_report_details', false);
+    }
+
+    public function rfd_api_get_user(phpbbEvent $event){
+        $data = $event->get_data();
+        $user = $data['user'];
+        $raw_user = $data['raw_user'];
+
+        $user['trader_positive'] = (int) $raw_user['user_trader_positive'];
+        $user['trader_neutral'] = (int) $raw_user['user_trader_neutral'];
+        $user['trader_negative'] = (int) $raw_user['user_trader_negative'];
+
+        $data['user'] = $user;
+        $event->set_data($data);
+    }
+
+    public function rfd_api_get_topic(phpbbEvent $event){
+        $data = $event->get_data();
+        $topic = $data['topic'];
+        $raw_topic = $data['raw_topic'];
+
+        $topic['trader_type'] = $raw_topic['topic_trader_type'];
+
+        $data['topic'] = $topic;
+        $event->set_data($data);
+
+    }
+
+
 }

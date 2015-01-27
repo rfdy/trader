@@ -1,31 +1,26 @@
-{% if TRADER_SHOW_FIELD && (TRADER_BUY + TRADER_SELL + TRADER_TRADE) > 1 %}
+{% if TRADER_SHOW_FIELD && (TRADER_BUY + TRADER_SELL + TRADER_TRADE) > 0 %}
     <br>
     <strong>I am:</strong>
+    {% if TRADER_SHOW_FIELD && (TRADER_BUY + TRADER_SELL + TRADER_TRADE) > 1 %}
+        {% if TRADER_BUY %}
+            <input id="trader_buy" type="radio" {% if TRADER_TYPE == 1 %}checked="checked"{% endif %} value=1 name="prefixfield">
+            <label style="display: inline;" for="trader_buy">Buying</label>
+        {% endif %}
 
-    {% if TRADER_BUY %}
-        <input id="trader_buy" type="radio" {% if TRADER_TYPE == 1 %}checked="checked"{% endif %} value=1 name="prefixfield">
-        <label style="display: inline;" for="trader_buy">
-            Buying
-        </label>
+        {% if TRADER_SELL %}
+            <input id="trader_sell" type="radio" {% if TRADER_TYPE == 2 %}checked="checked"{% endif %} value=2 name="prefixfield">
+            <label style="display: inline;" for="trader_sell">Selling</label>
+        {% endif %}
+
+        {% if TRADER_TRADE %}
+            <input id="trader_trade" type="radio" {% if TRADER_TYPE == 3 %}checked="checked"{% endif %} value=4 name="prefixfield">
+            <label style="display: inline;" for="trader_trade">Trading</label>
+        {% endif %}
+
+        <input type="hidden" name="trader_first_post" value="1">
+
+    {% else %}
+        {% if TRADER_BUY %} Buying {% elseif TRADER_SELL %} Selling {% elseif TRADER_TRADE %} Trading {% endif %}
+        <input type="hidden" name="default_type" value="1">
     {% endif %}
-
-
-    {% if TRADER_SELL %}
-        <input id="trader_sell" type="radio" {% if TRADER_TYPE == 2 %}checked="checked"{% endif %} value=2 name="prefixfield">
-        <label style="display: inline;" for="trader_sell">
-            Selling
-        </label>
-    {% endif %}
-
-    {% if TRADER_TRADE %}
-        <input id="trader_trade" type="radio" {% if TRADER_TYPE == 3 %}checked="checked"{% endif %} value=4 name="prefixfield">
-<label style="display: inline;" for="trader_trade">
-    Trading
-</label>
-    {% endif %}
-
-    <input type="hidden" name="trader_first_post" value="1">
-
-{% elseif (TRADER_BUY + TRADER_SELL + TRADER_TRADE) == 1 %}
-    <input type="hidden" name="default_type" value="1">
 {% endif %}
