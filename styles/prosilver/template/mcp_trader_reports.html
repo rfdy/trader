@@ -50,8 +50,8 @@
                         <div class="list-inner">
 
                             <a href="{REPORT.U_VIEW_DETAILS}" class="topictitle">{REPORT.short_comment}</a><br />
-                            <span>by {REPORT.from_username} &raquo; {{ REPORT.f_date_created|date('D M j, Y g:i a', false) }}</span><br />
-                            <span>to {REPORT.to_username}</span>
+                            <span>{L_FEEDBACK_BY_AUTHOR} {REPORT.from_username} &raquo; {{ REPORT.f_date_created|date('D M j, Y g:i a', false) }}</span><br />
+                            <span>{L_FEEDBACK_TO} {REPORT.to_username}</span>
                             <div class="responsive-show" style="display: none;">
                                 {L_REPORTER}{L_COLON} {postrow.to_username} &laquo; {postrow.r_date_created}
                             </div>

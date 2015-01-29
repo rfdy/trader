@@ -1,9 +1,9 @@
 <ul class="linklist">
     <li class="rightside pagination">
         {% if TOTAL_FEEDBACKS == 1 %}
-            {{ TOTAL_FEEDBACKS }} feedback &bull;
+            {{ TOTAL_FEEDBACKS }} {L_X_FEEDBACK} &bull;
         {% elseif TOTAL_FEEDBACKS %}
-            {{ TOTAL_FEEDBACKS }} feedbacks &bull;
+            {{ TOTAL_FEEDBACKS }} {L_X_FEEDBACKS} &bull;
         {% endif %}
         <!-- IF pagination -->
             <!-- INCLUDE pagination.html -->

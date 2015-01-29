@@ -1,9 +1,9 @@
 {% if TRADER_RATING is defined %}
-    <dt>Trader Score{L_COLON}</dt>
+    <dt>{L_TRADER_SCORE}{L_COLON}</dt>
     <dd>
         <strong id="trader_rating">{TRADER_RATING}</strong>
         {% if TRADER_PERCENTAGE is defined %}
-        ({{ TRADER_PERCENTAGE }}% Positive)
+        ({{ TRADER_PERCENTAGE }}% {L_POSITIVE})
         {% endif %}
         {% if TRADER_HAS_VIEW_FEEDBACK_PERMISSION %}
         [<a id="feedback_view" href="{U_FEEDBACK_VIEW}"> {L_TRADER_VIEW_FEEDBACK} </a>]

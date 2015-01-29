@@ -1,7 +1,7 @@
 <!-- INCLUDECSS ../theme/trader.css -->
 <!-- INCLUDEJS trader.js -->
 <!-- INCLUDE overall_header.html -->
-<h2>Trader Feedback for {{ TRADER_USERNAME_FULL }}</h2>
+<h2>{L_TRADER_FEEDBACK_FOR} {{ TRADER_USERNAME_FULL }}</h2>
 
 {% import _self as trader %}
 
@@ -12,11 +12,11 @@
 <div class="trader-feedback-container" >
     <div id="tabs">
         <ul>
-            <li class="tab {% if CURRENT_TAB == 'all' %}activetab{% endif %}" ><a href="{{ U_ACTION_TAB_ALL }}">All Feedback Received</a></li>
-            <li class="tab {% if CURRENT_TAB == 'buy' %}activetab{% endif %}"><a href="{{ U_ACTION_TAB_BUY }}">From Buyers</a></li>
-            <li class="tab {% if CURRENT_TAB == 'sell' %}activetab{% endif %}"><a href="{{ U_ACTION_TAB_SELL }}">From Sellers</a></li>
-            <li class="tab {% if CURRENT_TAB == 'trade' %}activetab{% endif %}"><a href="{{ U_ACTION_TAB_TRADE }}">From Trades</a></li>
-            <li class="tab {% if CURRENT_TAB == 'left' %}activetab{% endif %}"><a href="{{ U_ACTION_TAB_LEFT }}">Left for Others</a></li>
+            <li class="tab {% if CURRENT_TAB == 'all' %}activetab{% endif %}" ><a href="{{ U_ACTION_TAB_ALL }}">{L_ALL_FEEDBACK_RECEIVED}</a></li>
+            <li class="tab {% if CURRENT_TAB == 'buy' %}activetab{% endif %}"><a href="{{ U_ACTION_TAB_BUY }}">{L_RECEIVED_FROM_BUYERS}</a></li>
+            <li class="tab {% if CURRENT_TAB == 'sell' %}activetab{% endif %}"><a href="{{ U_ACTION_TAB_SELL }}">{L_RECEIVED_FROM_SELLERS}</a></li>
+            <li class="tab {% if CURRENT_TAB == 'trade' %}activetab{% endif %}"><a href="{{ U_ACTION_TAB_TRADE }}">{L_RECEIVED_FROM_TRADES}</a></li>
+            <li class="tab {% if CURRENT_TAB == 'left' %}activetab{% endif %}"><a href="{{ U_ACTION_TAB_LEFT }}">{L_LEFT_FOR_OTHERS}</a></li>
         </ul>
     </div>
 
@@ -29,14 +29,14 @@
                         <table class="table1">
                             <thead>
                             <tr>
-                                <th class="name">Rating Summary</th>
-                                <th class="name">Topic</th>
+                                <th class="name">{L_RATING_SUMMARY}</th>
+                                <th class="name">{L_TOPIC}</th>
                                 {% if CURRENT_TAB == 'left' or CURRENT_TAB == 'all' %}
-                                <th class="name">Type</th>
+                                <th class="name">{L_FEEDBACK_TYPE}</th>
                                 {% endif %}
-                                <th class="name">{% if CURRENT_TAB == 'left' %}Recipient{% else %}From{% endif %}</th>
-                                <th class="name">Date</th>
-                                <th class="name">Options</th>
+                                <th class="name">{% if CURRENT_TAB == 'left' %}{L_RECIPIENT}{% else %}{L_FROM}{% endif %}</th>
+                                <th class="name">{L_DATE}</th>
+                                <th class="name">{L_OPTIONS}</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -44,15 +44,15 @@
                                 <tr id="fdb-{{ fdb_row.feedback_id }}" class="{{ cycle(['bg1', 'bg2'], loop.index0) }} trader-row">
                                     <td>
                                         {% if fdb_row.feedback_score == 1 %}
-                                            <strong class="trader_rating positive" title="Positive">+1</strong>
+                                            <strong class="trader_rating positive" title="{L_POSITIVE}">+1</strong>
                                         {% elseif fdb_row.feedback_score == -1 %}
-                                            <strong class="trader_rating negative" title="Negative">&nbsp;-1</strong>
+                                            <strong class="trader_rating negative" title="{L_NEGATIVE}">&nbsp;-1</strong>
                                         {% else %}
-                                            <strong class="trader_rating neutral" title="Neutral">&nbsp; 0</strong>
+                                            <strong class="trader_rating neutral" title="{L_NEUTRAL}">&nbsp; 0</strong>
                                         {% endif %}
                                         &bull;
                                         {% if fdb_row.is_deleted %}
-                                        <span title="This feedback was deleted">[<em>DELETED</em>]</span>
+                                        <span title="{L_FEEDBACK_WAS_DELETED}">[<em>{L_FEEDBACK_DELETED}</em>]</span>
                                         {% endif %}
                                         <span class="trader_short_comment">{{ fdb_row.short_comment }}</span>
                                     </td>
@@ -62,19 +62,19 @@
                                     {% if CURRENT_TAB == 'left' or CURRENT_TAB == 'all' %}
                                     <td>
                                         {% if fdb_row.topic_type == 4 %}
-                                            Trader
+                                            {L_TRADER_TYPE_TRADER}
                                         {% else %}
                                             {% if fdb_row.show_left_for_others %}
                                                 {% if fdb_row.topic_type == 1 %}
-                                                Buyer
+                                                {L_TRADER_TYPE_BUYER}
                                                 {% elseif fdb_row.topic_type == 2 %}
-                                                Seller
+                                                {L_TRADER_TYPE_SELLER}
                                                 {% endif %}
                                             {% else %}
                                                 {% if fdb_row.topic_type == 1 %}
-                                                Seller
+                                                {L_TRADER_TYPE_SELLER}
                                                 {% elseif fdb_row.topic_type == 2 %}
-                                                Buyer
+                                                {L_TRADER_TYPE_BUYER}
                                                 {% endif %}
                                             {% endif %}
                                         {% endif %}
@@ -83,7 +83,7 @@
                                     {% endif %}
                                     <td>
                                         <a href="{{ fdb_row.U_VIEW_FEEDBACK }}">{{ fdb_row.table_username }}</a>
-                                        (<strong title="Trader Score: {{ fdb_row.table_user_trader_rating }}">{{ fdb_row.table_user_trader_rating }}</strong>)
+                                        (<strong title="{L_TRADER_SCORE}{L_COLON} {{ fdb_row.table_user_trader_rating }}">{{ fdb_row.table_user_trader_rating }}</strong>)
                                     </td>
                                     <td>
                                         <span class="trader_date" title="{{ fdb_row.date_created|date('M j, Y - g:i a T', false) }}">{{ fdb_row.date_created|date("M j, Y", false) }}</span>
@@ -92,32 +92,32 @@
                                         <ul class="trader-options post-buttons">
                                             {% if fdb_row.U_REPLY_FEEDBACK %}
                                                 <li class="trader-option">
-                                                    <a style="background-position: -19px 0;" href="{{ fdb_row.U_REPLY_FEEDBACK }}" class="button icon-button email-icon" title="Return Feedback"><span class="trader-span">Return Feedback</span></a>
+                                                    <a style="background-position: -19px 0;" href="{{ fdb_row.U_REPLY_FEEDBACK }}" class="button icon-button email-icon" title="{L_RETURN_FEEDBACK}"><span class="trader-span">{L_RETURN_FEEDBACK}</span></a>
                                                 </li>
                                             {% endif %}
 
                                             {% if fdb_row.U_EDIT_FEEDBACK %}
                                                 <li class="trader-option">
-                                                    <a href="{{ fdb_row.U_EDIT_FEEDBACK }}" class="button icon-button edit-icon" title="Edit this feedback"><span class="trader-span">Edit this feedback</span></a>
+                                                    <a href="{{ fdb_row.U_EDIT_FEEDBACK }}" class="button icon-button edit-icon" title="{L_EDIT_THIS_FEEDBACK}"><span class="trader-span">{L_EDIT_THIS_FEEDBACK}</span></a>
                                                 </li>
                                             {% endif %}
 
                                             {% if fdb_row.U_REPORT_FEEDBACK %}
                                                 <li class="trader-option">
-                                                    <a data-ajax="trader.report" href="{{ fdb_row.U_REPORT_FEEDBACK }}" class="button icon-button report-icon" title="Report this feedback"><span class="trader-span">Report this feedback</span></a>
+                                                    <a data-ajax="trader.report" href="{{ fdb_row.U_REPORT_FEEDBACK }}" class="button icon-button report-icon" title="{L_REPORT_THIS_FEEDBACK}"><span class="trader-span">{L_REPORT_THIS_FEEDBACK}</span></a>
                                                 </li>
                                             {% endif %}
 
                                             {% if fdb_row.long_comment %}
                                                 <li class="trader-option">
-                                                        <a href="javascript:void(0);" class="button icon-button responsive-menu-link" title="See private comment"
+                                                        <a href="javascript:void(0);" class="button icon-button responsive-menu-link" title="{L_SEE_PRIVATE_COMMENT}"
                                                             onclick="
                                                                 // alternate display of private comment
                                                                 alternate_display_tablerow_id('fdb_comment-{{ fdb_row.feedback_id }}');
                                                                 // hide all other private comments
                                                                 hide_elements_with_class('trader-long-comment', 'fdb_comment-{{ fdb_row.feedback_id }}');
                                                             ">
-                                                        <span class="trader-span">View Long Comment</span>
+                                                        <span class="trader-span">{L_SEE_PRIVATE_COMMENT}</span>
                                                     </a>
                                                 </li>
                                             {% endif %}
@@ -134,7 +134,7 @@
                                 {% endif %}
                             {% else %}
                             <tr class="{{ cycle(['bg1', 'bg2'], loop.index0) }}">
-                                <td colspan="6" class="no-feedback">There is no feedback to display.</td>
+                                <td colspan="6" class="no-feedback">{L_NO_FEEDBACK_TO_DISPLAY}</td>
                             </tr>
                             {% endfor %}
                             </tbody>
