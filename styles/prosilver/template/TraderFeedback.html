@@ -6,7 +6,7 @@
                 <h2>  {% if EDIT %} {L_FEEDBACK_TITLE_EDIT} {% else %} {L_FEEDBACK_TITLE} {% endif %} {{ USERNAME }}
                 </h2>
                 <fieldset>
-                    <h3>TOPIC: {% if TOPIC_TYPE==1 %} [WTB] {% elseif TOPIC_TYPE==2 %} [FS] {% elseif TOPIC_TYPE==3 %} [WTT] {% endif %}
+                    <h3>TOPIC: {% if TOPIC_TYPE==1 %} {L_TOPIC_PREFIX_WANT_TO_BUY} {% elseif TOPIC_TYPE==2 %} {L_TOPIC_PREFIX_FOR_SALE} {% elseif TOPIC_TYPE==3 %} {L_TOPIC_PREFIX_WANT_TO_TRADE} {% endif %}
                         {{ TOPIC_TITLE }}
                         </h3>
 
@@ -17,17 +17,17 @@
                         <dd>
                             <input id="trader_positive" type="radio" value=1 name="trader_rating" {% if RATING==1 %} checked="checked" {% endif %}>
                             <label for="trader_positive">
-                                Positive (+1)
+                                {L_POSITIVE} (+1)
                             </label>
 
                             <input id="trader_neutral" type="radio"  value=0 name="trader_rating" {% if RATING==0 %} checked="checked" {% endif %}>
                             <label for="trader_neutral">
-                                Neutral (0)
+                                {L_NEUTRAL} (0)
                             </label>
 
                             <input id="trader_negative" type="radio"  value=-1 name="trader_rating" {% if RATING==-1 %} checked="checked" {% endif %}>
                             <label for="trader_negative">
-                                Negative (-1)
+                                {L_NEGATIVE} (-1)
                             </label>
                         </dd>
                     </dl>

@@ -1,6 +1,6 @@
 <dl>
-	<dt><label for="">Enable Trader{L_COLON}</label><br /><span>Specify which trader topics are enabled, if any.</span></dt>
-	<dd><input {% if S_TRADER_BUY %}checked{% endif %} type="checkbox" id="trader_type_buy" name="trader_type_buy" value="buy"> <label for="trader_type_buy">Buy</label>
-        <input {% if S_TRADER_SELL %}checked{% endif %} type="checkbox" id="trader_type_sell" name="trader_type_sell" value="sell"> <label for="trader_type_sell">Sell</label>
-        <input {% if S_TRADER_TRADE %}checked{% endif %} type="checkbox" id="trader_type_trade" name="trader_type_trade" value="trade"> <label for="trader_type_trade">Trade</label></dd>
+	<dt><label for="">{L_ENABLE_TRADER}{L_COLON}</label><br /><span>{L_ENABLE_TRADER_DESC}</span></dt>
+	<dd><input {% if S_TRADER_BUY %}checked{% endif %} type="checkbox" id="trader_type_buy" name="trader_type_buy" value="buy"> <label for="trader_type_buy">{L_BUY}</label>
+        <input {% if S_TRADER_SELL %}checked{% endif %} type="checkbox" id="trader_type_sell" name="trader_type_sell" value="sell"> <label for="trader_type_sell">{L_SELL}</label>
+        <input {% if S_TRADER_TRADE %}checked{% endif %} type="checkbox" id="trader_type_trade" name="trader_type_trade" value="trade"> <label for="trader_type_trade">{L_TRADE}</label></dd>
 </dl>
