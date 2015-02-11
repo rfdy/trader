@@ -49,7 +49,7 @@ If User A has given User B:
   then User A will rate User B positively in the overall calculation of User A's Trader Score
 
 - More -1 (Negative) Feedbacks than +1 (Positive) Feedbacks,
-  then User A will rate User B positively in the overall calculation of User A's Trader Score
+  then User A will rate User B negatively in the overall calculation of User A's Trader Score
 
 Files:
 ======
