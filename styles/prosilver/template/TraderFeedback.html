@@ -6,7 +6,7 @@
                 <h2>  {% if EDIT %} {L_FEEDBACK_TITLE_EDIT} {% else %} {L_FEEDBACK_TITLE} {% endif %} {{ USERNAME }}
                 </h2>
                 <fieldset>
-                    <h3>TOPIC: {% if TOPIC_TYPE==1 %} {L_TOPIC_PREFIX_WANT_TO_BUY} {% elseif TOPIC_TYPE==2 %} {L_TOPIC_PREFIX_FOR_SALE} {% elseif TOPIC_TYPE==3 %} {L_TOPIC_PREFIX_WANT_TO_TRADE} {% endif %}
+                    <h3>{L_TOPIC}{L_COLON} {% if TOPIC_TYPE==1 %} {L_TOPIC_PREFIX_WANT_TO_BUY} {% elseif TOPIC_TYPE==2 %} {L_TOPIC_PREFIX_FOR_SALE} {% elseif TOPIC_TYPE==3 %} {L_TOPIC_PREFIX_WANT_TO_TRADE} {% endif %}
                         {{ TOPIC_TITLE }}
                         </h3>
 
@@ -52,17 +52,17 @@
                     {% if EDIT %}
                         <dl>
                             <dt>
-                                <label for="delete_feedback_yes">Delete Feedback?</label>
+                                <label for="delete_feedback_yes">{L_DELETE_FEEDBACK_Q}</label>
                             </dt>
                             <dd>
                                 <input id="delete_feedback_yes" type="radio" value=1 name="delete_feedback" {% if DELETED %} checked="checked" {% endif %}>
                                 <label for="delete_feedback_yes">
-                                    Yes
+                                    {L_YES}
                                 </label>
 
                                 <input id="delete_feedback_no" type="radio"  value=0 name="delete_feedback" {% if !DELETED %} checked="checked" {% endif %}>
                                 <label for="delete_feedback_no">
-                                    No
+                                    {L_NO}
                                 </label>
                             </dd>
                         </dl>
@@ -76,7 +76,7 @@
     </div>
 </div>
 {% if EDIT && MODERATOR %}
-    <h3>Edit History</h3>
+    <h3>{L_EDIT_HISTORY}</h3>
     {% for revision in HISTORY %}
         <div class="page-body panel bg3">
             <h3>{{ revision.date_created|date(U_DATE_FORMAT, false) }} - {% if revision.username %} {{ revision.username }} {% else %} {L_ORIGINAL_COMMENT} {% endif %}</h3>
