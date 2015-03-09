@@ -220,7 +220,7 @@ class Trader
         $delete_feedback = $this->request->variable('delete_feedback', $feedback_row['is_deleted']);
 
         if ($submit && (strlen($new_short) < self::MIN_SHORT_LENGTH || strlen($new_short) > self::MAX_SHORT_LENGTH)) {
-            $err_comments['short'] = ($this->user->lang['REQUIERED_CHARACTERS']);
+            $err_comments['short'] = ($this->user->lang['REQUIRED_CHARACTERS']);
         }
         if ($submit && strlen($new_long) > self::MAX_LONG_LENGTH) {
             $err_comments['long'] = true;
