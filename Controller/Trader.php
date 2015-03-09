@@ -99,8 +99,8 @@ class Trader
         $feedback_reply_id = $this->request->variable('reply_id', 0);
 
         $rating = $this->request->variable('trader_rating', 0);
-        $short_comment = trim($this->request->variable('short_comment', ''));
-        $long_comment = trim($this->request->variable('long_comment', ''));
+        $short_comment = utf8_normalize_nfc(trim($this->request->variable('short_comment', '', true)));
+        $long_comment = utf8_normalize_nfc(trim($this->request->variable('long_comment', '', true)));
 
         if ($feedback_reply_id) {
             $feedback_row = $this->manager->getAllFeedbackInfo($feedback_reply_id);
@@ -117,7 +117,7 @@ class Trader
             'u' => $user_id,
         ));
 
-        $back_url = '<a href=' . append_sid(generate_board_url() . "/viewtopic.php?t=" . $topic_id) . '>Back</a>';
+        $back_url = '<a href=' . append_sid(generate_board_url() . "/viewtopic.php?t=" . $topic_id) . '>&laquo; ' . ($this->user->lang['BACK_TO_PREV']) . '</a>';
 
         $submit = $this->request->is_set_post('submit');
 
@@ -169,7 +169,7 @@ class Trader
 
             $trader_profile_url = '<a href=' . $this->helper->route('rfd_trader_view', array(
                     'u' => $to_user_row['user_id'],
-                )) . '>View Profile</a>';
+                )) . '>' . ($this->user->lang['VIEW_PROFILE']) . '&nbsp;' . $to_user_row['username'] . '</a>';
             trigger_error($this->user->lang('FEEDBACK_SUCCESS') . '<br /><br />' . $trader_profile_url);
         }
 
@@ -186,7 +186,7 @@ class Trader
             'U_TRADER_FEEDBACK' => $feedback_route,
             'U_TRADER_PROFILE' => append_sid("{$this->phpbb_root_path}memberlist.$this->phpEx", 'mode=viewprofile&amp;u=' . $to_user_row['user_id']),
         ));
-        return $this->helper->render('TraderFeedback.html', 'Give Feedback');
+        return $this->helper->render('TraderFeedback.html', ($this->user->lang['FEEDBACK_TITLE']) . $to_user_row['username']);
     }
 
     public function editFeedbackAction()
@@ -203,7 +203,7 @@ class Trader
         $feedback_route = $this->helper->route('rfd_trader_view', array(
             'u' => $return_user_id,
         ));
-        $trader_profile_url = $trader_profile_url = '<a href=' . $feedback_route . '>Back</a>';
+        $trader_profile_url = $trader_profile_url = '<a href=' . $feedback_route . '>' . ($this->user->lang['BACK_TO_PREV']) . '</a>';
 
         if (!$this->canEditFeedback($feedback_row['date_created'], $feedback_row['from_user_id'])) {
             trigger_error($this->user->lang('E_CANNOT_EDIT') . '<br /><br />' . $trader_profile_url);
@@ -215,12 +215,12 @@ class Trader
         $submit = $this->request->is_set_post('submit');
         $to_user_row = $this->getUser($feedback_row['to_user_id']);
         $rating = $this->request->variable('trader_rating', $feedback_row['rating']);
-        $new_short = trim($this->request->variable('short_comment', $feedback_row['short_comment']));
-        $new_long = trim($this->request->variable('long_comment', $feedback_row['long_comment']));
+        $new_short = utf8_normalize_nfc(trim($this->request->variable('short_comment', $feedback_row['short_comment'], true)));
+        $new_long = utf8_normalize_nfc(trim($this->request->variable('long_comment', $feedback_row['long_comment'], true)));
         $delete_feedback = $this->request->variable('delete_feedback', $feedback_row['is_deleted']);
 
         if ($submit && (strlen($new_short) < self::MIN_SHORT_LENGTH || strlen($new_short) > self::MAX_SHORT_LENGTH)) {
-            $err_comments['short'] = '* Required 10-200 Characters';
+            $err_comments['short'] = ($this->user->lang['REQUIERED_CHARACTERS']);
         }
         if ($submit && strlen($new_long) > self::MAX_LONG_LENGTH) {
             $err_comments['long'] = true;
@@ -275,7 +275,7 @@ class Trader
             'U_DATE_FORMAT' => $this->user->data['user_dateformat']
         ));
 
-        return $this->helper->render('TraderFeedback.html', 'Edit Feedback');
+        return $this->helper->render('TraderFeedback.html', ($this->user->lang['FEEDBACK_TITLE_EDIT']) . $to_user_row['username']);
     }
 
     public function viewUserFeedbackAction()
@@ -427,7 +427,7 @@ class Trader
             trigger_error("Unknown Action!");
         }
 
-        return $this->helper->render('view_user_feedback.html', 'Viewing Trader Feedback - User ' . $user_page_row['username']);
+        return $this->helper->render('view_user_feedback.html', ($this->user->lang['TRADER_FEEDBACK_FOR']) . '&nbsp;' . $user_page_row['username']);
     }
 
 
