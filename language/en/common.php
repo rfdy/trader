@@ -115,9 +115,9 @@ $lang = array_merge($lang, array(
 	'GO_TO_TOPIC'                     =>  'Go to topic',
 	'VIEW_PROFILE'				=> 'View profile trader',
 	'EDIT_HISTORY'				=> 'Edit History',
-	'MEMBRES_WHO_LEFT_POSITIVE'				=> 'Members who left positive',
-	'MEMBRES_WHO_LEFT_NEGATIVE'				=> 'Members who left negative',
+	'MEMBERS_WHO_LEFT_POSITIVE'				=> 'Members who left positive',
+	'MEMBERS_WHO_LEFT_NEGATIVE'				=> 'Members who left negative',
 	'RECIPIENT'				=> 'Recipient',
-	'REQUIERED_CHARACTERS'				=> '* Required 10-200 Characters',
-	'REQUIERED_INTENTION_TO'				=> '* Please select whether your intention is to Buy, Sell or Trade.',
+	'REQUIRED_CHARACTERS'				=> '* Required 10-200 Characters',
+	'REQUIRED_INTENTION_TO'				=> '* Please select whether your intention is to Buy, Sell or Trade.',
 ));
