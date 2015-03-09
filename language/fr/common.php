@@ -117,9 +117,9 @@ $lang = array_merge($lang, array(
 	'GO_TO_TOPIC'                     =>  'Voir le sujet',
 	'VIEW_PROFILE'				=> 'Voir le profil trader de l’utilisateur',
 	'EDIT_HISTORY'				=> 'Historique des modifications',
-	'MEMBRES_WHO_LEFT_POSITIVE'				=> 'Utilisateurs ayant laissé un avis positif',
-	'MEMBRES_WHO_LEFT_NEGATIVE'				=> 'Utilisateurs ayant laissé un avis négatif',
+	'MEMBERS_WHO_LEFT_POSITIVE'				=> 'Utilisateurs ayant laissé un avis positif',
+	'MEMBERS_WHO_LEFT_NEGATIVE'				=> 'Utilisateurs ayant laissé un avis négatif',
 	'RECIPIENT'				=> 'Adressé à',
-	'REQUIERED_CHARACTERS'				=> '* Nombre de caractères requis entre 10 et 200.',
-	'REQUIERED_INTENTION_TO'				=> '* Veuillez indiquer si votre intention est d’acheter, vendre ou échanger.',
+	'REQUIRED_CHARACTERS'				=> '* Nombre de caractères requis entre 10 et 200.',
+	'REQUIRED_INTENTION_TO'				=> '* Veuillez indiquer si votre intention est d’acheter, vendre ou échanger.',
 ));
