@@ -54,6 +54,7 @@ $lang = array_merge($lang, array(
     'REPORT_CLOSED_TITLE'       =>  'Stängda handlar-rapporter',
     'REPORT_OPEN_DESC'          =>  'Denna lista innehåller alla rapporterade handlar-feedbacker som ej har hanterats.',
     'REPORT_CLOSED_DESC'        =>  'Denna lista innehåller alla rapporterade handlar-feedbacker som har lösts.',
+	'REPORT_DETAILS_TITLE'         =>  'Trader Report details',
     'LOG_TRADER_REPORT_DELETED' =>  '<strong>Raderade handlar-rapport</strong><br />',
     'LOG_TRADER_REPORT_CLOSED'  =>  '<strong>Stängde handlar-rapport</strong><br />',
     'ORIGINAL_COMMENT'          =>  'Originalkommentar',
