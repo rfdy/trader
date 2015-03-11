@@ -53,6 +53,7 @@ $lang = array_merge($lang, array(
     'REPORT_CLOSED_TITLE'       =>  'Gesloten Handelaar Meldingen',
     'REPORT_OPEN_DESC'          =>  'Dit is een lijst van alle vraag/aanbod meldingen die nog moeten worden afgehandeld.',
     'REPORT_CLOSED_DESC'        =>  'Dit is een lijst van alle vraag/aanbod meldingen die zijn afgehandeld.',
+	'REPORT_DETAILS_TITLE'         =>  'Trader Report details',
     'LOG_TRADER_REPORT_DELETED' =>  '<strong>Verwijderde Handelaar melding</strong><br />',
     'LOG_TRADER_REPORT_CLOSED'  =>  '<strong>Gesloten Handelaar melding</strong><br />',
     'ORIGINAL_COMMENT'          =>  'Originele Opmerking',
