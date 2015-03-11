@@ -226,7 +226,7 @@ class TraderListener implements EventSubscriberInterface {
         $data['post_row']['user_trader_negative'] = $negative;
         $data['post_row']['user_trader_percentage'] = $this->manager->getPositivePercent($positive, $negative);
         $data['post_row']['user_trader_rating'] = $positive - $negative;
-        $data['post_row']['title'] = "$positive Positive\n$neutral Neutral\n$negative Negative";
+        $data['post_row']['title'] = "$positive " . ($this->user->lang['POSITIVE']) . "\n$neutral " . ($this->user->lang['NEUTRAL']) . "\n$negative " . ($this->user->lang['NEGATIVE']) . "";
         $event->set_data($data);
     }
 

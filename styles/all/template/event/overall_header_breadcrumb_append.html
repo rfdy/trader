@@ -1,6 +1,6 @@
 {% if TRADER_USERNAME %}
-    <span class="crumb"><a href="{{ U_TRADER_PROFILE }}" {$MICRODATA} data-navbar-reference="user_profile">{{ TRADER_USERNAME }} {L_READ_PROFILE}</a></span>
+    <span class="crumb"><a href="{{ U_TRADER_PROFILE }}" {$MICRODATA} data-navbar-reference="user_profile">{L_READ_PROFILE} {{ TRADER_USERNAME }}</a></span>
 {% endif %}
 {% if U_TRADER_FEEDBACK %}
-    <span class="crumb"><a href="{{ U_TRADER_FEEDBACK }}">{L_FEEDBACK_PAGE}</a></span>
+    <span class="crumb"><a href="{{ U_TRADER_FEEDBACK }}">{L_FEEDBACK_PAGE} {{ TRADER_USERNAME }}</a></span>
 {% endif %}
