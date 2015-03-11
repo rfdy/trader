@@ -53,6 +53,7 @@ $lang = array_merge($lang, array(
     'REPORT_CLOSED_TITLE'       =>  'Closed Trader reports',
     'REPORT_OPEN_DESC'          =>  'This is a list of all reported trader feedbacks which are still to be handled.',
     'REPORT_CLOSED_DESC'        =>  'This is a list of all reports about trader feedbacks which have previously been resolved.',
+	'REPORT_DETAILS_TITLE'         =>  'Trader Report details',
     'LOG_TRADER_REPORT_DELETED' =>  '<strong>Deleted Trader report</strong><br />',
     'LOG_TRADER_REPORT_CLOSED'  =>  '<strong>Closed Trader report</strong><br />',
     'ORIGINAL_COMMENT'          =>  'Original Comment',
