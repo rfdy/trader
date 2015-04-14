@@ -82,8 +82,9 @@ class TraderListener implements EventSubscriberInterface {
             // API events
             'rfd.api.get_forum'                     => 'rfd_api_get_forum',
             //'rfd.api.get_user'                      => 'rfd_api_get_user',
-
-            'rfd.api.get_topic'                     => 'rfd_api_get_topic'
+            'rfd.api.pre_create_topic'              => 'rfd_api_pre_create_topic',
+            'rfd.api.get_topic'                     => 'rfd_api_get_topic',
+            'rfd.api.pre_update_topic'              => 'rfd_api_pre_update_topic',
         );
     }
 
@@ -226,7 +227,7 @@ class TraderListener implements EventSubscriberInterface {
         $data['post_row']['user_trader_negative'] = $negative;
         $data['post_row']['user_trader_percentage'] = $this->manager->getPositivePercent($positive, $negative);
         $data['post_row']['user_trader_rating'] = $positive - $negative;
-        $data['post_row']['title'] = "$positive Positive\n$neutral Neutral\n$negative Negative";
+        $data['post_row']['title'] = "$positive " . ($this->user->lang['POSITIVE']) . "\n$neutral " . ($this->user->lang['NEUTRAL']) . "\n$negative " . ($this->user->lang['NEGATIVE']) . "";
         $event->set_data($data);
     }
 
@@ -396,7 +397,7 @@ class TraderListener implements EventSubscriberInterface {
         $forum = $data['forum'];
         $raw_forum = $data['raw_forum'];
 
-        $forum['trader_status'] = $this->manager->getTraderStatusString($raw_forum['enabled_trader_types']);
+        $forum['trader_status'] = $this->manager->getTraderStatusArray($raw_forum['enabled_trader_types']);
 
         $data['forum'] = $forum;
         $event->set_data($data);
@@ -427,17 +428,94 @@ class TraderListener implements EventSubscriberInterface {
         $event->set_data($data);
     }
 
-    public function rfd_api_get_topic(phpbbEvent $event){
+    /**
+     * Add the Trader specific information about this Topic when requesting via the API
+     *
+     * @param phpbbEvent $event
+     */
+    public function rfd_api_get_topic(phpbbEvent $event)
+    {
         $data = $event->get_data();
-        $topic = $data['topic'];
-        $raw_topic = $data['raw_topic'];
+        $topics = $data['topics'];
+        $raw_topics = $data['raw_topics'];
+        for($i=0; $i<count($topics); $i++){
+            $raw_type = (int)$raw_topics[$i]['topic_trader_type'];
+            if(empty($raw_type)){
+                $type = null;
+            }
+            else{
+                $type_ary = $this->manager->getTraderStatusArray($raw_type);
+                $type = $type_ary[0];
+            }
+            $topics[$i]['trader_type'] = $type;
+        }
 
-        $topic['trader_type'] = $raw_topic['topic_trader_type'];
-
-        $data['topic'] = $topic;
+        $data['topics'] = $topics;
         $event->set_data($data);
-
     }
 
+    public function rfd_api_pre_create_topic(phpbbEvent $event)
+    {
+        $data = $event->get_data();
+        $forum_id = $data['forum_id'];
+        $errors = $data['errors'];
+        $post = $this->request->get_super_global(\phpbb\request\request::POST);
+        $type = $post['trader_type'];
+
+        //TODO:: resolve the trader_type parameter
+
+        if($this->manager->getForumStatus($forum_id)){
+            $type = $this->manager->validateForumType($forum_id, $type, true);
+
+            // Expose error if trader_type is not supported by the forum
+            if(is_null($type)){
+                $errors[] = 'This forum does not support that trader type';
+                $data['errors'] = $errors;
+                $event->set_data($data);
+            }
+            // Overwrite the request so that submit_post_end listener can handle trader_type if it is valid
+            else{
+                $this->request->overwrite('prefixfield', $type, \phpbb\request\request_interface::POST);
+            }
+        }
+    }
+
+    /**
+     * Event: rfd.api.pre_update_topic
+     *
+     * Validate trader_type being passed in
+     *
+     * @param phpbbEvent $event
+     */
+    public function rfd_api_pre_update_topic(phpbbEvent $event)
+    {
+        $data = $event->get_data();
+        $topic_id = $data['topic_id'];
+        $forum_id = $data['forum_id'];
+        $errors = $data['errors'];
+        $type = $this->request->variable('trader_type', '', false, \phpbb\request\request_interface::POST);
+
+        // if trader_type is not set, set it to the current trader_type
+        if(!isset($type)){
+            $type = $this->manager->getTopicType($topic_id);
+            $type = $this->manager->validateForumType($forum_id, $type, false);
+        }
+        // if trader_type is set and valid, set it to the new trader_type
+        else if($this->manager->getForumStatus($forum_id) ){
+            $type = $this->manager->validateForumType($forum_id, $type, true);
+        }
+        // Expose error if trader_type is not supported by the forum
+        if(is_null($type)){
+            $errors[] = 'This forum does not support that trader type';
+            $data['errors'] = $errors;
+            $event->set_data($data);
+        }
+        else{
+            // Overwrite the request so that submit_post_end listener can handle trader_type
+            $this->request->overwrite('prefixfield', $type, \phpbb\request\request_interface::POST);
+        }
+
+
+    }
 
 }

@@ -57,7 +57,7 @@
                                         <span class="trader_short_comment">{{ fdb_row.short_comment }}</span>
                                     </td>
                                     <td>
-                                        <a title="Go to Topic: {{ fdb_row.topic_title }}" href="{{ fdb_row.topic_url }}">{{ fdb_row.topic_title }}</a>
+                                        <a title="{L_GO_TO_TOPIC}{L_COLON} {{ fdb_row.topic_title }}" href="{{ fdb_row.topic_url }}">{{ fdb_row.topic_title }}</a>
                                     </td>
                                     {% if CURRENT_TAB == 'left' or CURRENT_TAB == 'all' %}
                                     <td>

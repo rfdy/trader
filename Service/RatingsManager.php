@@ -750,6 +750,8 @@ class RatingsManager {
         return $this->auth->acl_get(RatingsManager::M_TRADER_EDIT) || $this->auth->acl_get(RatingsManager::A_TRADER);
     }
 
+
+
     /**
      * Used to determine if difference between positive and negative ratings changes, and makes appropriate changes to the rating given  to user.
      *
@@ -823,7 +825,7 @@ class RatingsManager {
     }
 
     /**
-     * Returns a string representation of a forum's trader status given its
+     * Returns an array representation of a forum's trader status given its
      * binary representation
      *
      * Bit-wise representation of trader status is:
@@ -831,20 +833,58 @@ class RatingsManager {
      * (Trade)  (Sell)  (Buy)
      *
      * @param $bit_rep - A binary representation of a forum's trader status
-     * @return $str_rep - A string representation of a forum's trader status
+     * @return $arr_rep - A string representation of a forum's trader status
      */
-    public function getTraderStatusString($bit_rep) {
-        $str_rep = '';
+    public function getTraderStatusArray($bit_rep) {
+
+
+        $arr_rep = array();
         if($this->isSetTrade($bit_rep)) {
-            $str_rep = 'trade' . $str_rep;
+            $arr_rep[] = 'trade';
         }
         if($this->isSetSell($bit_rep)) {
-            $str_rep = 'sell' . (strlen($str_rep) > 0 ? ',' : '') . $str_rep;
-            $bit_rep -= 2;
+            $arr_rep[] = 'sell';
         }
         if($this->isSetBuy($bit_rep)) {
-            $str_rep = 'buy' . (strlen($str_rep) > 0 ? ',' : '') . $str_rep;
+            $arr_rep[] = 'buy';
         }
-        return $str_rep;
+        return $arr_rep;
+    }
+
+    public function getForumStatus($forum_id){
+        $result = $this->db->sql_query('SELECT enabled_trader_types FROM ' . FORUMS_TABLE . ' WHERE forum_id=' . $forum_id);
+        $forum_row = $this->db->sql_fetchrow($result);
+        if($forum_row['enabled_trader_types']){
+            return true;
+        }else return false;
+    }
+
+    /**
+     * Validates the request's trader type with the forum's trader_type and returns the corresponding (int) $type or null if invalid
+     * @param $forum_id
+     * @param $type
+     * @return int
+     */
+    public function validateForumType($forum_id, $type, $isStringRep){
+        $result = $this->db->sql_query('SELECT enabled_trader_types FROM ' . FORUMS_TABLE . ' WHERE forum_id=' . $forum_id);
+        $forum_row = $this->db->sql_fetchrow($result);
+        $forum_type = $forum_row['enabled_trader_types'];
+        if($isStringRep){
+            switch ($type){
+                case 'buy':
+                    $type = self::TOPIC_TYPE_BUY;
+                    break;
+                case 'sell':
+                    $type = self::TOPIC_TYPE_SELL;
+                    break;
+                case 'trade':
+                    $type = self::TOPIC_TYPE_TRADE;
+                    break;
+                default:
+                    $type = null;
+            }
+        }
+        if(!is_null($type) && $type <= $forum_type) return $type;
+        else return null;
     }
 }
