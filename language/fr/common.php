@@ -1,7 +1,7 @@
 <?php
 /**
  *
- * @package phpBB Extension - Trader
+ * @package phpBB Extension - Trader [French]
  * @copyright (c) 2015 phpBB Group
  * @license http://opensource.org/licenses/gpl-2.0.php GNU General Public License v2
  *
@@ -95,9 +95,9 @@ $lang = array_merge($lang, array(
     'POSITIVE_FEEDBACK'         =>  'Avis positif(s)',
     'TOTAL_POSITIVE_FEEDBACK'   =>  'Total des avis positifs',
     'RECENT_RATINGS'            =>  'Notes récentes',
-    'PAST'                      =>  'Durant le(s)',
-    '6_MONTHS'                  =>  '6 derniers mois',
-    '12_MONTHS'                 =>  '12 derniers mois',
+    'PAST_MONTH'                  =>  'Dernier mois',
+    'PAST_6_MONTHS'                  =>  '6 derniers mois',
+    'PAST_12_MONTHS'                 =>  '12 derniers mois',
     'X_FEEDBACK'                =>  'avis',
     'X_FEEDBACKS'               =>  'avis',
     'I_AM'                      =>  'Je veux',
