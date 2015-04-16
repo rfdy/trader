@@ -1,7 +1,7 @@
 <?php
 /**
 *
-* @package phpBB Extension - Acme Demo
+* @package phpBB Extension - Acme Demo [Nederlands]
 * @copyright (c) 2013 phpBB Group
 * @license http://opensource.org/licenses/gpl-2.0.php GNU General Public License v2
 *
@@ -93,9 +93,9 @@ $lang = array_merge($lang, array(
     'POSITIVE_FEEDBACK'         =>  'Positieve Feedback',
     'TOTAL_POSITIVE_FEEDBACK'   =>  'Totaal Positieve Feedback',
     'RECENT_RATINGS'            =>  'Recente Waarderingen',
-    'PAST'                      =>  'Afgelopen',
-    '6_MONTHS'                  =>  '6 Maanden',
-    '12_MONTHS'                 =>  '12 Maanden',
+    'PAST_MONTH'                  =>  'Past month',
+    'PAST_6_MONTHS'                  =>  'Afgelopen 6 Maanden',
+    'PAST_12_MONTHS'                 =>  'Afgelopen 12 Maanden',
     'X_FEEDBACK'                =>  'feedback',
     'X_FEEDBACKS'               =>  'feedbacks',
     'I_AM'                      =>  'Ik wil',
