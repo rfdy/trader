@@ -1,23 +1,41 @@
 <?php
 /**
- *
- * @package phpBB Extension - Trader [French]
- * @copyright (c) 2015 phpBB Group
- * @license http://opensource.org/licenses/gpl-2.0.php GNU General Public License v2
- *
- * French translation by ForumsFaciles (http://www.forumsfaciles.fr) & by Galixte (http://www.galixte.com)
- *
- */
+*
+* @package phpBB Extension - Trader [French]
+* French translation by ForumsFaciles (http://www.forumsfaciles.fr) & by Galixte (http://www.galixte.com)
+* @copyright (c) 2015 phpBB Group
+* @license http://opensource.org/licenses/gpl-2.0.php GNU General Public License v2
+*
+*/
 
+/**
+* DO NOT CHANGE
+*/
 if (!defined('IN_PHPBB'))
 {
-    exit;
+	exit;
 }
 
 if (empty($lang) || !is_array($lang))
 {
-    $lang = array();
+	$lang = array();
 }
+
+// DEVELOPERS PLEASE NOTE
+//
+// All language files should use UTF-8 as their encoding and the files must not contain a BOM.
+//
+// Placeholders can now contain order information, e.g. instead of
+// 'Page %s of %s' you can (and should) write 'Page %1$s of %2$s', this allows
+// translators to re-order the output of data while ensuring it remains correct
+//
+// You do not need this where single placeholders are used, e.g. 'Message %d' is fine
+// equally where a string contains only two placeholders which are used to wrap text
+// in a url you again do not need to specify an order e.g., 'Click %sHERE%s' is fine
+//
+// Some characters you may want to copy&paste:
+// ’ « » “ ” …
+//
 
 $lang = array_merge($lang, array(
     'ALREADY_GIVEN_FEEDBACK'    =>  'Vous avez déjà donné un avis à cet utilisateur concernant ce sujet.',
@@ -123,4 +141,5 @@ $lang = array_merge($lang, array(
     'RECIPIENT'				    => 'Adressé à',
     'REQUIRED_CHARACTERS'		=> '* Nombre de caractères requis entre 10 et 200.',
     'REQUIRED_INTENTION_TO'		=> '* Veuillez indiquer si votre intention est d’acheter, vendre ou échanger.',
+    'FROM_TRADER'		=> 'De',
 ));
