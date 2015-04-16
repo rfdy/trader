@@ -1,7 +1,7 @@
 <?php
 /**
 *
-* @package phpBB Extension - Acme Demo
+* @package phpBB Extension - Acme Demo [Swedish]
 * Swedish translation by Holger (http://www.maskinisten.net)
 * @copyright (c) 2013 phpBB Group
 * @license http://opensource.org/licenses/gpl-2.0.php GNU General Public License v2
@@ -94,9 +94,9 @@ $lang = array_merge($lang, array(
     'POSITIVE_FEEDBACK' => 'Positiv feedback',
     'TOTAL_POSITIVE_FEEDBACK' => 'Total positiv feedback',
     'RECENT_RATINGS' => 'Nya värderingar',
-    'PAST' => 'Senaste',
-    '6_MONTHS' => '6 månaderna',
-    '12_MONTHS' => '12 månaderna',
+    'PAST_MONTH' => 'Past month',
+    'PAST_6_MONTHS' => 'Senaste 6 månaderna',
+    'PAST_12_MONTHS' => 'Senaste 12 månaderna',
     'X_FEEDBACK' => 'feedback',
     'X_FEEDBACKS' => 'feedback',
     'I_AM' => 'Jag',
