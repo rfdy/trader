@@ -284,6 +284,8 @@ class RatingsManager {
             $sql .= ' SET user_trader_positive=user_trader_positive+1';
         } elseif ($rating == self::RATE_NEGATIVE) {
             $sql .= ' SET user_trader_negative=user_trader_negative+1';
+        } elseif ($rating == self::RATE_NEUTRAL) {
+            $sql .= ' SET user_trader_neutral=user_trader_neutral+1';
         }
 
         $sql .= ' WHERE user_id=' . $user_id;
@@ -474,6 +476,8 @@ class RatingsManager {
             $rating_field = 'user_trader_positive';
         } elseif ($rating == self::RATE_NEGATIVE) {
             $rating_field = 'user_trader_negative';
+        } elseif ($rating == self::RATE_NEUTRAL) {
+            $rating_field = 'user_trader_neutral';
         }
 
         $this->db->sql_return_on_error(true);
@@ -633,7 +637,7 @@ class RatingsManager {
     }
 
     /**
-     * @deprecated
+     *
      * @param int $user_id - the id of the user you want to count feedbacks for (or false if all users)
      * @param int $filter - TOPIC_TYPE_SELL, TOPIC_TYPE_BUY, TOPIC_TYPE_TRADE, TAB_TYPE_ALL, TAB_TYPE_LEFT
      *                      specifies the topic type of the feedbacks you want (LEFT meaning those feedbacks which
@@ -788,12 +792,10 @@ class RatingsManager {
         }
 
         if ($this->normalize($difference) != $this->normalize($new_difference) && $insert) {
-            if ($difference) {
                 $this->removeUserRating($to_user_id, $this->normalize($difference));
-            }
-            if ($new_difference) {
                 $this->giveUserRating($to_user_id, $this->normalize($new_difference));
-            }
+        }else if($this->get_users_feedback_count($to_user_id) == 1 && $this->normalize($new_difference) == 0 && $insert){
+            $this->giveUserRating($to_user_id, self::RATE_NEUTRAL);
         }
         return $next_id;
     }
