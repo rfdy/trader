@@ -99,8 +99,8 @@ class Trader
         $feedback_reply_id = $this->request->variable('reply_id', 0);
 
         $rating = $this->request->variable('trader_rating', 0);
-        $short_comment = trim($this->request->variable('short_comment', ''));
-        $long_comment = trim($this->request->variable('long_comment', ''));
+        $short_comment = utf8_normalize_nfc(trim($this->request->variable('short_comment', '', true)));
+        $long_comment = utf8_normalize_nfc(trim($this->request->variable('long_comment', '', true)));
 
         if ($feedback_reply_id) {
             $feedback_row = $this->manager->getAllFeedbackInfo($feedback_reply_id);
@@ -215,8 +215,8 @@ class Trader
         $submit = $this->request->is_set_post('submit');
         $to_user_row = $this->getUser($feedback_row['to_user_id']);
         $rating = $this->request->variable('trader_rating', $feedback_row['rating']);
-        $new_short = trim($this->request->variable('short_comment', $feedback_row['short_comment']));
-        $new_long = trim($this->request->variable('long_comment', $feedback_row['long_comment']));
+        $new_short = utf8_normalize_nfc(trim($this->request->variable('short_comment', $feedback_row['short_comment'], true)));
+        $new_long = utf8_normalize_nfc(trim($this->request->variable('long_comment', $feedback_row['long_comment'], true)));
         $delete_feedback = $this->request->variable('delete_feedback', $feedback_row['is_deleted']);
 
         if ($submit && (strlen($new_short) < self::MIN_SHORT_LENGTH || strlen($new_short) > self::MAX_SHORT_LENGTH)) {
