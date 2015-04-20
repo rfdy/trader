@@ -332,6 +332,7 @@ class TraderListener implements EventSubscriberInterface {
      * @param phpbbEvent $event
      */
     public function modify_posting_parameters(phpbbEvent $event) {
+        global $template;
         $post = $this->request->get_super_global(\phpbb\request\request::POST);
 
         // if this is not the first post, we don't need to catch any errors
@@ -342,7 +343,8 @@ class TraderListener implements EventSubscriberInterface {
         $data = $event->get_data();
 
         if (!empty($data['submit']) && empty($post['prefixfield'])) {
-            $data['error'][] = "Please select whether your intention is to Buy, Sell or Trade.";
+            $template->assign_var('HAS_ERROR', true);
+            $data['error'][] = '';
             $event->set_data($data);
         }
     }
