@@ -12,17 +12,17 @@ class mcp_trader_info
             'version'	=> '0.0.1',
             'modes'		=> array(
                 'open_trader_reports' => array(
-                                    'title' => 'Open Trader reports',
+                                    'title' => 'REPORT_OPEN_TITLE',
                                     'auth'  => 'acl_m_trader_edit && acl_a_trader',
                                     'cat'   => array('MCP_REPORTS')
                                 ),
                 'closed_trader_reports'	=> array(
-                                    'title' => 'Closed Trader reports',
+                                    'title' => 'REPORT_CLOSED_TITLE',
                                     'auth'  => 'acl_m_trader_edit && acl_a_trader',
                                     'cat'   => array('MCP_REPORTS')
                             ),
                 'trader_report_details' => array(
-                                    'title' =>  'Trader Report details',
+                                    'title' =>  'REPORT_DETAILS_TITLE',
                                     'auth'  =>  'acl_m_trader_edit && acl_a_trader',
                                     'cat'   =>  array('MCP_REPORTS')
                             ),

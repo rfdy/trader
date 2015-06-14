@@ -147,7 +147,7 @@ class release_0_0_1 extends \phpbb\db\migration\migration {
             // MCP: Reported Trader feedbacks
             array('module.add', array('mcp', 'MCP_REPORTS', array(
                 'module_basename'	=> '\rfd\trader\mcp\mcp_trader_module',
-                'module_langname'	=> 'Open Trader reports',
+                'module_langname'	=> 'REPORT_OPEN_TITLE',
                 'module_mode'	=> 'open_trader_reports',
                 'module_auth'	=> 'acl_m_trader_edit || acl_a_trader',
             ))),
@@ -155,7 +155,7 @@ class release_0_0_1 extends \phpbb\db\migration\migration {
             // MCP: Reported Trader feedbacks
             array('module.add', array('mcp', 'MCP_REPORTS', array(
                 'module_basename'	=> '\rfd\trader\mcp\mcp_trader_module',
-                'module_langname'	=> 'Closed Trader reports',
+                'module_langname'	=> 'REPORT_CLOSED_TITLE',
                 'module_mode'	=> 'closed_trader_reports',
                 'module_auth'	=> 'acl_m_trader_edit || acl_a_trader',
             ))),
@@ -163,7 +163,7 @@ class release_0_0_1 extends \phpbb\db\migration\migration {
             // MCP: Report Feedback details
             array('module.add', array('mcp', 'MCP_REPORTS', array(
                 'module_basename'	=> '\rfd\trader\mcp\mcp_trader_module',
-                'module_langname'	=> 'Trader Report details',
+                'module_langname'	=> 'REPORT_DETAILS_TITLE',
                 'module_mode'	=> 'trader_report_details',
                 'module_auth'	=> 'acl_m_trader_edit || acl_a_trader',
             ))),
