@@ -438,7 +438,7 @@ class Trader
 
         // check that this is ajax request and that the user reporting the feedback is the recipient of the feedback
         if($request->is_ajax() && $user_id == $this->manager->getFeedbackRecipientID($id)) {
-            $reason = $request->variable('reason', '');
+            $reason = $request->variable('reason', '', true);
 
             confirm_box(false, $user->lang['REPORT_DESC'], '', 'report_feedback_form.html', "trader/view-feedback/?action=report&id=".$id);
 
