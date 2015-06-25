@@ -140,7 +140,7 @@ $lang = array_merge($lang, array(
 	'TRADER_VIEW_FEEDBACK'			=> 'Se handlarens feedback',
 	'TRADING'			=> 'Bytare',
 	'USER_NOT_FOUND'			=> 'Användaren som du vill lämna feedback om existerar ej',
-	'VIEW_PROFILE'			=> 'View profile trader',
+	'VIEW_TRADER_FEEDBACK_PROFILE'			=> 'View profile trader',
 	'X_FEEDBACK'			=> 'feedback',
 	'X_FEEDBACKS'			=> 'feedback',
 ));

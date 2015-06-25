@@ -169,7 +169,7 @@ class Trader
 
             $trader_profile_url = '<a href=' . $this->helper->route('rfd_trader_view', array(
                     'u' => $to_user_row['user_id'],
-                )) . '>' . ($this->user->lang['VIEW_PROFILE']) . '&nbsp;' . $to_user_row['username'] . '</a>';
+                )) . '>' . ($this->user->lang['VIEW_TRADER_FEEDBACK_PROFILE']) . '&nbsp;' . $to_user_row['username'] . '</a>';
             trigger_error($this->user->lang('FEEDBACK_SUCCESS') . '<br /><br />' . $trader_profile_url);
         }
 

@@ -139,7 +139,7 @@ $lang = array_merge($lang, array(
 	'TRADER_VIEW_FEEDBACK'			=> 'Pogledaj povratni odgovor trgovca',
 	'TRADING'			=> 'Mijenjam',
 	'USER_NOT_FOUND'			=> 'Korisnik kojeg želiš ocijeniti ne postoji',
-	'VIEW_PROFILE'			=> 'View profile trader',
+	'VIEW_TRADER_FEEDBACK_PROFILE'			=> 'View profile trader',
 	'X_FEEDBACK'			=> 'povratni odgovor',
 	'X_FEEDBACKS'			=> 'povratni odgovori',
 ));

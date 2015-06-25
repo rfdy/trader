@@ -140,7 +140,7 @@ $lang = array_merge($lang, array(
 	'TRADER_VIEW_FEEDBACK'			=> 'Voir les avis du trader',
 	'TRADING'			=> 'échanger',
 	'USER_NOT_FOUND'			=> 'L’utilisateur que vous essayez d’évaluer est introuvable',
-	'VIEW_PROFILE'			=> 'Voir le profil trader de l’utilisateur',
+	'VIEW_TRADER_FEEDBACK_PROFILE'			=> 'Voir le profil trader de l’utilisateur',
 	'X_FEEDBACK'			=> 'avis',
 	'X_FEEDBACKS'			=> 'avis',
 ));

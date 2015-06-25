@@ -139,7 +139,7 @@ $lang = array_merge($lang, array(
 	'TRADER_VIEW_FEEDBACK'			=> 'View Trader Feedback',
 	'TRADING'			=> 'Trading',
 	'USER_NOT_FOUND'			=> 'The user you are rating cannot be found',
-	'VIEW_PROFILE'			=> 'View profile trader',
+	'VIEW_TRADER_FEEDBACK_PROFILE'			=> 'View profile trader',
 	'X_FEEDBACK'			=> 'feedback',
 	'X_FEEDBACKS'			=> 'feedbacks',
 ));
