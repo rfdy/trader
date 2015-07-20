@@ -1,7 +1,7 @@
 <!-- INCLUDECSS ../theme/trader.css -->
 <!-- INCLUDEJS trader.js -->
 <!-- INCLUDE overall_header.html -->
-<h2>{L_TRADER_FEEDBACK_FOR} {{ TRADER_USERNAME_FULL }}</h2>
+<h2>{L_TRADER_FEEDBACK_FOR} {{ TRADER_USERNAME }}</h2>
 
 {% import _self as trader %}
 
@@ -34,7 +34,7 @@
                                 {% if CURRENT_TAB == 'left' or CURRENT_TAB == 'all' %}
                                 <th class="name">{L_FEEDBACK_TYPE}</th>
                                 {% endif %}
-                                <th class="name">{% if CURRENT_TAB == 'left' %}{L_RECIPIENT}{% else %}{L_FROM}{% endif %}</th>
+                                <th class="name">{% if CURRENT_TAB == 'left' %}{L_RECIPIENT}{% else %}{L_FROM_TRADER}{% endif %}</th>
                                 <th class="name">{L_TIME}</th>
                                 <th class="name">{L_OPTIONS}</th>
                             </tr>
