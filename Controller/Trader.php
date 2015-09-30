@@ -99,8 +99,8 @@ class Trader
         $feedback_reply_id = $this->request->variable('reply_id', 0);
 
         $rating = $this->request->variable('trader_rating', 0);
-        $short_comment = utf8_normalize_nfc(trim($this->request->variable('short_comment', '', true)));
-        $long_comment = utf8_normalize_nfc(trim($this->request->variable('long_comment', '', true)));
+        $short_comment = trim($this->request->variable('short_comment', '', true));
+        $long_comment = trim($this->request->variable('long_comment', '', true));
 
         if ($feedback_reply_id) {
             $feedback_row = $this->manager->getAllFeedbackInfo($feedback_reply_id);
@@ -145,7 +145,7 @@ class Trader
             trigger_error($this->user->lang('ALREADY_GIVEN_FEEDBACK') . '<br /><br />' . $back_url);
         }
         if ($submit && (strlen($short_comment) < self::MIN_SHORT_LENGTH || strlen($short_comment) > self::MAX_SHORT_LENGTH)) {
-            $err_comments['short'] = '* Required 10-200 Characters';
+            $err_comments['short'] = ($this->user->lang['REQUIRED_CHARACTERS']);
         }
         if ($submit && strlen($long_comment) > self::MAX_LONG_LENGTH) {
             $err_comments['long'] = true;
@@ -169,7 +169,7 @@ class Trader
 
             $trader_profile_url = '<a href=' . $this->helper->route('rfd_trader_view', array(
                     'u' => $to_user_row['user_id'],
-                )) . '>' . ($this->user->lang['VIEW_PROFILE']) . '&nbsp;' . $to_user_row['username'] . '</a>';
+                )) . '>' . ($this->user->lang['VIEW_TRADER_FEEDBACK_PROFILE']) . '&nbsp;' . $to_user_row['username'] . '</a>';
             trigger_error($this->user->lang('FEEDBACK_SUCCESS') . '<br /><br />' . $trader_profile_url);
         }
 
@@ -215,8 +215,8 @@ class Trader
         $submit = $this->request->is_set_post('submit');
         $to_user_row = $this->getUser($feedback_row['to_user_id']);
         $rating = $this->request->variable('trader_rating', $feedback_row['rating']);
-        $new_short = utf8_normalize_nfc(trim($this->request->variable('short_comment', $feedback_row['short_comment'], true)));
-        $new_long = utf8_normalize_nfc(trim($this->request->variable('long_comment', $feedback_row['long_comment'], true)));
+        $new_short = trim($this->request->variable('short_comment', $feedback_row['short_comment'], true));
+        $new_long = trim($this->request->variable('long_comment', $feedback_row['long_comment'], true));
         $delete_feedback = $this->request->variable('delete_feedback', $feedback_row['is_deleted']);
 
         if ($submit && (strlen($new_short) < self::MIN_SHORT_LENGTH || strlen($new_short) > self::MAX_SHORT_LENGTH)) {
@@ -438,7 +438,7 @@ class Trader
 
         // check that this is ajax request and that the user reporting the feedback is the recipient of the feedback
         if($request->is_ajax() && $user_id == $this->manager->getFeedbackRecipientID($id)) {
-            $reason = $request->variable('reason', '');
+            $reason = $request->variable('reason', '', true);
 
             confirm_box(false, $user->lang['REPORT_DESC'], '', 'report_feedback_form.html', "trader/view-feedback/?action=report&id=".$id);
 
